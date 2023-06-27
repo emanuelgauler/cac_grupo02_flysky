@@ -8,11 +8,11 @@
 		<version>2.7.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>RelacionesJpa</artifactId>
+	<groupId>CaC.Grupo2</groupId>
+	<artifactId>FlySky</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>RelacionesJpa</name>
-	<description>RelacionesJpa</description>
+	<name>FlySky</name>
+	<description>Trabajo integrador de Codo a Codo 4.0 - Java Avanzado</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
