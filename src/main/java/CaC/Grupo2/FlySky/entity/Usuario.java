@@ -20,6 +20,7 @@ public class Usuario {
     @Column(name = "nombre_completo_usuario")
     private String nombreCompletoUsuario;
 
-    @Column(name = "dni")
-    private Long dni;
-}
+    @Column(name = "telefono")
+    private Long telefono;
+
+   }

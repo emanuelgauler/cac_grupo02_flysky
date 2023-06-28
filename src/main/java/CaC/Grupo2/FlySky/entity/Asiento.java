@@ -15,6 +15,9 @@ public class Asiento {
     @JoinColumn(name = "vueloID", nullable = false)
     private Vuelo vuelo;
 
+    @Column(name = "nombre_completo_usuario")
+    private String nombreCompletoUsuario;
+
     @Column(name = "ocupado")
     private boolean ocupado;
 
