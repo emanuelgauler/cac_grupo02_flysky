@@ -8,6 +8,14 @@ public class Reserva {
     @Column(name = "reservaID")
     private Long reservaID;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "usuarioID", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "vueloID", nullable = false)
+    private Vuelo vuelo;
+
     @Column(name = "estado_reserva")
     private boolean estadoReserva;
 

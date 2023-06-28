@@ -1,6 +1,7 @@
 package CaC.Grupo2.FlySky.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -9,6 +10,9 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usuarioID")
     private Long usuarioID;
+
+    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
+    private List<Reserva> reservas;
 
     @Column(name = "tipo_usuario")
     private String tipoUsuario;
