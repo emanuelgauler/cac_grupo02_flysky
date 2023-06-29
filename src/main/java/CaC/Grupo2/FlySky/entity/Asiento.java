@@ -1,9 +1,12 @@
 package CaC.Grupo2.FlySky.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "asiento")
+@Data
 public class Asiento {
 
     @Id

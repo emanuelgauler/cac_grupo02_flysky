@@ -1,11 +1,14 @@
 package CaC.Grupo2.FlySky.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "vuelo")
+@Data
 public class Vuelo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
