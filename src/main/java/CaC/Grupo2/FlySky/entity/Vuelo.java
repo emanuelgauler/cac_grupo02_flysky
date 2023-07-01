@@ -1,11 +1,17 @@
 package CaC.Grupo2.FlySky.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+
+@Getter
+@Setter
 @Entity
-@Table(name = "vuelo")
+@Table(name = "vuelos")
 public class Vuelo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +34,7 @@ public class Vuelo {
     private Date fecha;
 
     @Column(name = "precio")
-    private int precio;
+    private double precio;
 
     @Column(name = "conexion")
     private boolean conexion;

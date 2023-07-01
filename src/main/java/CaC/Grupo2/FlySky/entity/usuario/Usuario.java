@@ -1,10 +1,15 @@
-package CaC.Grupo2.FlySky.entity;
+package CaC.Grupo2.FlySky.entity.usuario;
+
+import CaC.Grupo2.FlySky.entity.Reserva;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
-
+@Getter
+@Setter
 @Entity
-@Table(name = "usuario")
+@Table(name = "usuarios")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +20,7 @@ public class Usuario {
     private List<Reserva> reservas;
 
     @Column(name = "tipo_usuario")
-    private String tipoUsuario;
+    private TipoUsuario tipoUsuario;
 
     @Column(name = "nombre_completo_usuario")
     private String nombreCompletoUsuario;
@@ -24,3 +29,4 @@ public class Usuario {
     private Long telefono;
 
    }
+

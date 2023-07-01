@@ -1,9 +1,14 @@
 package CaC.Grupo2.FlySky.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "asiento")
+@Table(name = "asientos")
 public class Asiento {
 
     @Id
@@ -15,8 +20,10 @@ public class Asiento {
     @JoinColumn(name = "vueloID", nullable = false)
     private Vuelo vuelo;
 
-    @Column(name = "nombre_completo_usuario")
-    private String nombreCompletoUsuario;
+    @Column(name = "pasajero")
+    private String pasajero;
+    @Column(name = "nombre_asiento")
+    private String nombreAsiento;
 
     @Column(name = "ocupado")
     private boolean ocupado;
