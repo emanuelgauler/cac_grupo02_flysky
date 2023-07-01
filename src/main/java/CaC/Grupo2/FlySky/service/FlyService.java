@@ -1,9 +1,6 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.AsientoDto;
-import CaC.Grupo2.FlySky.dto.ReservaDto;
-import CaC.Grupo2.FlySky.dto.RespReservaDto;
-import CaC.Grupo2.FlySky.dto.VueloDto;
+import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
@@ -16,6 +13,7 @@ import CaC.Grupo2.FlySky.repository.ReservaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,10 +42,29 @@ public class FlyService implements IFlyService{
         if (vuelosEnt.isEmpty()) {
             throw new NotFoundException("la lista de vuelos esta vacía");
         }
+        List<Vuelo> vuelos = new ArrayList<>();
+        Date fechaActual= new Date();
+        for (Vuelo vuelo : vuelosEnt){
+            Date fechaVuelo= vuelo.getFecha();
+
+            if(fechaVuelo.after(fechaActual) && checkAsiento(vuelo) ){
+                   vuelos.add(vuelo);
+            }
+
+        }
         List<VueloDto> vuelosDto = new ArrayList<>();
-        vuelosEnt.forEach(c-> vuelosDto.add(mapper.map(c,VueloDto.class)));
+        vuelos.forEach(c-> vuelosDto.add(mapper.map(c,VueloDto.class)));
 
         return vuelosDto;
+    }
+
+    private boolean checkAsiento(Vuelo vuelo) {
+        for(Asiento asiento : vuelo.getAsientos()){
+                if(!asiento.isOcupado()){
+                    return true;
+                }
+        }
+        return false;
     }
 
     @Override
@@ -86,10 +103,22 @@ public class FlyService implements IFlyService{
         Reserva persistReserva = reservaRepository.save(reserva);
 
         RespReservaDto resp = new RespReservaDto();
-        resp.setReserva(modelMapper.map(persistReserva, ReservaDto.class));
+
+        SimpleDateFormat fechaHora= new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String fechaHoraActual=fechaHora.format(persistReserva.getFechaReserva());
+
+        ReservaDto reservaDto1= new ReservaDto();
+
+        reservaDto1.setNumeroReserva(persistReserva.getReservaID());
+        reservaDto1.setUsuario(modelMapper.map(persistReserva.getUsuario(), UsuarioDto.class));
+        reservaDto1.setVuelo(modelMapper.map(persistReserva.getVuelo(), VueloDto.class));
+        reservaDto1.setFechaReserva(fechaHoraActual);
+
+        resp.setReserva(reservaDto1);
         resp.setMensaje("Su reserva se realizó con éxito...");
         return resp;
     }
+
 
     @Override
     public List<ReservaDto> buscarTodasReservas() {
@@ -100,8 +129,17 @@ public class FlyService implements IFlyService{
         if (reservaEnt.isEmpty() ) {
             throw new NotFoundException("la lista de reserva esta vacía");
         }
+        /*
+        reservaEnt.stream().filter(reserva -> {
+            reserva.getVuelo().
+        });
+
+
+         */
         List<ReservaDto> reservaDto = new ArrayList<>();
         reservaEnt.forEach(c-> reservaDto.add(mapper.map(c,ReservaDto.class)));
         return reservaDto;
     }
+
+
 }

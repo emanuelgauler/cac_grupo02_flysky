@@ -20,7 +20,7 @@ public class Usuario {
     private List<Reserva> reservas;
 
     @Column(name = "tipo_usuario")
-    private TipoUsuario tipoUsuario;
+    private TipoUsuarioEnum tipoUsuario;
 
     @Column(name = "nombre_completo_usuario")
     private String nombreCompletoUsuario;

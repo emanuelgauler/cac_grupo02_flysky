@@ -1,6 +1,6 @@
 package CaC.Grupo2.FlySky.entity.usuario;
 
-public enum TipoUsuario {
+public enum TipoUsuarioEnum {
     ADMINISTRADOR,
     AGENTE_VENTAS,
     CLIENTE

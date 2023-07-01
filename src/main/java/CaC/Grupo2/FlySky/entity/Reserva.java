@@ -1,4 +1,5 @@
 package CaC.Grupo2.FlySky.entity;
+import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,9 +29,9 @@ public class Reserva {
     @Column(name = "estado_reserva")
     private boolean estadoReserva;
 
-    @Column(name = "metodo_pago")
-    private String metodoPago;
-
     @Column(name = "fecha_reserva")
     private Date fechaReserva;
+
+    @OneToOne(mappedBy = "reserva")
+    private Pago pago;
 }
