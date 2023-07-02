@@ -1,7 +1,16 @@
 package CaC.Grupo2.FlySky.entity;
+import CaC.Grupo2.FlySky.entity.usuario.Usuario;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.Date;
+
+
+@Getter
+@Setter
 @Entity
-@Table(name = "reserva")
+@Table(name = "reservas")
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +30,7 @@ public class Reserva {
 
     @Column(name = "metodo_pago")
     private String metodoPago;
+
+    @Column(name = "fecha_reserva")
+    private Date fechaReserva;
 }
