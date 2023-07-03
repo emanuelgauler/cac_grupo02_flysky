@@ -2,6 +2,7 @@ package CaC.Grupo2.FlySky.service;
 
 import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
+import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.entity.Vuelo;
@@ -9,6 +10,7 @@ import CaC.Grupo2.FlySky.exception.NotFoundException;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
 import CaC.Grupo2.FlySky.repository.FlyRepository;
+import CaC.Grupo2.FlySky.repository.PagoRepository;
 import CaC.Grupo2.FlySky.repository.ReservaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,13 @@ public class FlyService implements IFlyService{
     FlyRepository flyRepository;
     ReservaRepository reservaRepository;
     AsientoRepository asientoRepository;
+    PagoRepository pagoRepository;
 
-    public FlyService( FlyRepository flyRepository, ReservaRepository reservaRepository,AsientoRepository asientoRepository) {
+    public FlyService( FlyRepository flyRepository, ReservaRepository reservaRepository,AsientoRepository asientoRepository,PagoRepository pagoRepository) {
         this.flyRepository = flyRepository;
         this.reservaRepository = reservaRepository;
         this.asientoRepository = asientoRepository;
+        this.pagoRepository =pagoRepository;
     }
 
 
@@ -42,6 +46,7 @@ public class FlyService implements IFlyService{
         if (vuelosEnt.isEmpty()) {
             throw new NotFoundException("la lista de vuelos esta vacía");
         }
+
         List<Vuelo> vuelos = new ArrayList<>();
         Date fechaActual= new Date();
         for (Vuelo vuelo : vuelosEnt){
@@ -52,6 +57,7 @@ public class FlyService implements IFlyService{
             }
 
         }
+
         List<VueloDto> vuelosDto = new ArrayList<>();
         vuelos.forEach(c-> vuelosDto.add(mapper.map(c,VueloDto.class)));
 
@@ -119,7 +125,7 @@ public class FlyService implements IFlyService{
         return resp;
     }
 
-
+/*
     @Override
     public List<ReservaDto> buscarTodasReservas() {
         ModelMapper mapper = new ModelMapper();
@@ -136,9 +142,38 @@ public class FlyService implements IFlyService{
 
 
          */
+    /*
         List<ReservaDto> reservaDto = new ArrayList<>();
         reservaEnt.forEach(c-> reservaDto.add(mapper.map(c,ReservaDto.class)));
         return reservaDto;
+    }
+
+
+
+     */
+    @Override
+    public String pagarReserva(PagoDto pagoDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        Date fechaActual = new Date();
+
+        Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró la reserva con el ID especificado"));
+
+        Pago pago= reservaExistente.getPago();
+
+        if(pagoDto.getMonto() != pago.getMonto()){
+            throw new NotFoundException("No ingreso el monto correcto");
+        }
+
+        pago.setPagado(true);
+        pago.setTipoPago(pagoDto.getTipoPago());
+        pago.setFechaPago(fechaActual);
+        pago.setMonto(pago.getMonto());
+        pago.setReserva(reservaExistente);
+
+        Pago persistPago = pagoRepository.save(pago);
+
+        return "Reserva pagada exitosamente";
     }
 
 

@@ -28,7 +28,7 @@ public class Pago {
     @Column(name = "monto")
     private double monto;
 
-    @Column(name = "pagodo")
+    @Column(name = "pagodo", columnDefinition = "boolean default false")
     private boolean pagado;
 
 }

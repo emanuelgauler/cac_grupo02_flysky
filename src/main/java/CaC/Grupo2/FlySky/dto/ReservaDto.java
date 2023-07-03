@@ -14,5 +14,6 @@ public class ReservaDto {
     private UsuarioDto usuario;
     private VueloDto vuelo;
     private String fechaReserva;
+    private boolean pagado;
 
 }
