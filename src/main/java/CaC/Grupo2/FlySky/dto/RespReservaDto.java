@@ -12,5 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RespReservaDto {
     private ReservaDto reserva;
+    private double monto;
     private String mensaje;
 }
