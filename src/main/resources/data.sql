@@ -13,3 +13,9 @@ insert into asientos values ( 1, '1V', false, null, 'ventanilla', 1 )
 , ( 5, '3V', false, null, 'ventanilla', 1 )
 , ( 6, '3P', false, null, 'pasillo', 1 )
 ;
+
+--Usuario (reservas, tipo_usuario,nombre_completo_usuario,telefono)
+insert into usuarios values
+(1,'AGENTE_VENTAS','Maxi Correa',11000000001),
+(2,'CLIENTE','Pepe Luis',11000000002),
+(3,'ADMINISTRADOR','Pechugas Laru',11000000003);

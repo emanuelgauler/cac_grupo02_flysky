@@ -3,6 +3,7 @@ package CaC.Grupo2.FlySky.service;
 import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Reserva;
+import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.entity.Vuelo;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
@@ -10,6 +11,7 @@ import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
 import CaC.Grupo2.FlySky.repository.FlyRepository;
 import CaC.Grupo2.FlySky.repository.ReservaRepository;
+import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ public class FlyService implements IFlyService{
     FlyRepository flyRepository;
     ReservaRepository reservaRepository;
     AsientoRepository asientoRepository;
+
+    UsuarioRepository usuarioRepository;
 
     public FlyService( FlyRepository flyRepository, ReservaRepository reservaRepository,AsientoRepository asientoRepository) {
         this.flyRepository = flyRepository;
@@ -140,6 +144,23 @@ public class FlyService implements IFlyService{
         reservaEnt.forEach(c-> reservaDto.add(mapper.map(c,ReservaDto.class)));
         return reservaDto;
     }
+
+    //User_Story_4
+    @Override
+    public List<RespReservaDto> getHistorial(TipoUsuarioEnum tipoUsuario, Long usuarioID){
+
+        List<Reserva> reservaEnt2 = reservaRepository.findAll();
+        List<Usuario> usuarioEnt = usuarioRepository.findAll();
+
+
+        List<RespReservaDto> respuestaHistorial = new ArrayList<>();
+        //ReservaDto histReserva = new ReservaDto();
+
+        //RespReservaDto respHistorial = new RespReservaDto();
+        //respHistorial.setReserva(histReserva);
+        //respHistorial.setMensaje("Su reserva se realizó con éxito...");
+        return respuestaHistorial;
+    };
 
 
 }
