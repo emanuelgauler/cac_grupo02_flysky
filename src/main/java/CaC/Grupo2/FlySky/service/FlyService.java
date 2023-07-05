@@ -80,14 +80,32 @@ public class FlyService implements IFlyService{
         Vuelo vueloExistente = flyRepository.findById(reservaDto.getVuelo().getVueloID())
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el vuelo con el ID especificado"));
         
-        List<Long> asientos_solicitados
+        List<Long> id_asientos_solicitados
                 = asientos_solicitados_en(reservaDto);
         
         List<Asiento> asientos_del_vuelo_actual
                 = vueloExistente.recuperarLosAsientosSegunLosIds(
-                        asientos_solicitados_en(reservaDto)
+                        id_asientos_solicitados
         );
 
+        // VERIFICANDO QUE TODOS LOS ASIENTOS SOLICITADOS SE ENCUENTRAN EN EL VUELO
+        if( id_asientos_solicitados.size() != asientos_del_vuelo_actual.size() ) {
+            List<Long> id_asientos_del_vuelo
+                    = asientos_del_vuelo_actual.stream().map(Asiento::getAsientoID)
+                    .collect(Collectors.toList());
+            
+            List<Long> id_asientos_no_encontrados
+                    = id_asientos_solicitados.stream()
+                    .filter(id -> !id_asientos_del_vuelo.contains(id) )
+                    .collect(Collectors.toList());
+            
+            String message = id_asientos_no_encontrados.stream()
+                    .map( id -> String.format("El asiento %d no se encuentra en el vuelo %d", id, vueloExistente.getVueloID()) )
+                    .reduce( "", String::concat );
+            
+            throw new IllegalArgumentException(message);
+        }
+        
         /*
         for( Asiento asiento_del_vuelo : asientos_del_vuelo_actual ) {
             if( asiento_del_vuelo.isOcupado() )
@@ -96,7 +114,7 @@ public class FlyService implements IFlyService{
                         );
             
             Long id_actual = asiento_del_vuelo.getAsientoID();
-            Optional<Asiento> x = asientos_solicitados
+            Optional<Asiento> x = id_asientos_solicitados
                     .stream().filter( a -> Objects.equals(a.getAsientoID(), id_actual))
                     .findAny();
             if( x.isPresent() ) {
@@ -184,7 +202,7 @@ public class FlyService implements IFlyService{
      */
     @Override
     public String pagarReserva(PagoDto pagoDto) {
-        ModelMapper modelMapper = new ModelMapper();
+        //ModelMapper modelMapper = new ModelMapper();
         Date fechaActual = new Date();
 
         Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
@@ -202,7 +220,7 @@ public class FlyService implements IFlyService{
         pago.setMonto(pago.getMonto());
         pago.setReserva(reservaExistente);
 
-        Pago persistPago = pagoRepository.save(pago);
+        pagoRepository.save(pago);
 
         return "Reserva pagada exitosamente";
     }
