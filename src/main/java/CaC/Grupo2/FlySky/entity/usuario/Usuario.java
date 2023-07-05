@@ -1,6 +1,7 @@
 package CaC.Grupo2.FlySky.entity.usuario;
 
 import CaC.Grupo2.FlySky.entity.Reserva;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Data
 @Table(name = "usuarios")
 public class Usuario {
     @Id

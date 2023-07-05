@@ -13,3 +13,18 @@ insert into asientos values ( 1, '1V', false, null, 'ventanilla', 1 )
 , ( 5, '3V', false, null, 'ventanilla', 1 )
 , ( 6, '3P', false, null, 'pasillo', 1 )
 ;
+
+--Usuario
+insert into usuarios values
+(1,'Maxi Correa',1100000001,0),
+(2,'Cristina F',1100000002,0),
+(3,'Nestor K',1100000003,1),
+(4,'Javier M',1100000004,1),
+(5,'Pelado L',1100000005,2),
+(6,'Pato B',1100000006,2);
+
+--Reserva (Reserva_Id, Estado_Reserva, Fecha_Reserva, UsuarioID, VueloID)
+INSERT INTO reservas VALUES
+(1,TRUE,'2023-07-10 02:00',5,1),
+(2,FALSE,'2023-07-10 02:00',5,2),
+(3,TRUE,'2023-07-10 02:00',6,3);

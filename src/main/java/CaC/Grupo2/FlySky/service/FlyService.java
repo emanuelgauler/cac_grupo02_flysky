@@ -10,6 +10,7 @@ import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
 import CaC.Grupo2.FlySky.repository.FlyRepository;
 import CaC.Grupo2.FlySky.repository.ReservaRepository;
+import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 //@Qualifier("flyService")
@@ -26,10 +30,13 @@ public class FlyService implements IFlyService{
     ReservaRepository reservaRepository;
     AsientoRepository asientoRepository;
 
-    public FlyService( FlyRepository flyRepository, ReservaRepository reservaRepository,AsientoRepository asientoRepository) {
+    UsuarioRepository usuarioRepository;
+
+    public FlyService(FlyRepository flyRepository, ReservaRepository reservaRepository, AsientoRepository asientoRepository, UsuarioRepository usuarioRepository) {
         this.flyRepository = flyRepository;
         this.reservaRepository = reservaRepository;
         this.asientoRepository = asientoRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
 
@@ -141,5 +148,30 @@ public class FlyService implements IFlyService{
         return reservaDto;
     }
 
+    @Override
+    public List<RespReservaDto> getHistorial(SolHistorialDto solHistorialDto){
+
+        Optional<Usuario> usuarioCta = usuarioRepository.findById(solHistorialDto.getUsuarioIdConsulta());
+        System.out.println(usuarioCta);
+
+        //Preguntar si el usuario es agente
+
+        Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdRespuenta());
+        System.out.println(usuarioRta);
+
+        List<Reserva> respTodasReservas = reservaRepository.findAll();
+        System.out.println(respTodasReservas);
+
+
+        List<Reserva> histViajes = respTodasReservas.stream().filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta())).collect(Collectors.toList());
+        System.out.println(histViajes);
+
+
+
+
+
+
+        return null;
+    }
 
 }
