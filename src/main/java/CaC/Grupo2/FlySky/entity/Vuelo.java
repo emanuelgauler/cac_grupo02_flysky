@@ -1,6 +1,5 @@
 package CaC.Grupo2.FlySky.entity;
 
-import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,28 +39,12 @@ public class Vuelo {
     @Column(name = "aerolinea")
     private String aerolinea;
     
-    public List<Asiento> recuperaTusAsientosSegunLos(List<Asiento> asientosSolicitados) {
-        List<Long> id_asientos_solicitados = asientosSolicitados.stream()
-                .map(Asiento::getAsientoID)
+    public List<Asiento> recuperarLosAsientosSegunLosIds(List<Long> asientosSolicitados) {
+        
+        List<Asiento> asientos_solicitados
+                = asientos.stream()
+                .filter(asiento -> asientosSolicitados.contains(asiento.getAsientoID()))
                 .collect(Collectors.toList());
-        
-        List<Asiento> asientos_solicitados = new ArrayList<>();
-        for( Long id : id_asientos_solicitados ) {
-            Optional<Asiento> first = asientos.stream().filter(asiento -> asiento.getAsientoID().equals(id))
-                    .findFirst();
-            first.ifPresent(asientos_solicitados::add);
-        }
-        
-        List<Long> collect = id_asientos_solicitados.stream()
-                .filter(id -> asientos_solicitados.stream()
-                        .anyMatch(asiento -> !asiento.getAsientoID().equals(id))
-                ).collect(Collectors.toList());
-        if( 0 < collect.size()) {
-            String message = collect.stream().map( id -> String.format("El asiento %i no existe en el vuelo %i\n", id, getVueloID()) )
-                    .reduce( "", String::concat);
-            
-            throw new IllegalArgumentException( message );
-        }
         
         return asientos_solicitados;
     }

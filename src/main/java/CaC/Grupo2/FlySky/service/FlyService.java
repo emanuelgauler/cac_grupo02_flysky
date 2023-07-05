@@ -80,11 +80,15 @@ public class FlyService implements IFlyService{
         Vuelo vueloExistente = flyRepository.findById(reservaDto.getVuelo().getVueloID())
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el vuelo con el ID especificado"));
         
-        List<Asiento> asientos_solicitados
+        List<Long> asientos_solicitados
                 = asientos_solicitados_en(reservaDto);
         
-        List<Asiento> asientos_del_vuelo_actual = vueloExistente.recuperaTusAsientosSegunLos( asientos_solicitados );
+        List<Asiento> asientos_del_vuelo_actual
+                = vueloExistente.recuperarLosAsientosSegunLosIds(
+                        asientos_solicitados_en(reservaDto)
+        );
 
+        /*
         for( Asiento asiento_del_vuelo : asientos_del_vuelo_actual ) {
             if( asiento_del_vuelo.isOcupado() )
                 throw new IllegalArgumentException(
@@ -101,7 +105,6 @@ public class FlyService implements IFlyService{
             }
         }
 
-        /*
         for (AsientoDto asientoDto : reservaDto.getVuelo().getAsientos()) {
             Asiento asientoExistente = asientoRepository.findById(asientoDto.getAsientoID())
                     .orElseThrow(() -> new IllegalArgumentException("No se encontró el asiento con el ID especificado"));
@@ -144,12 +147,13 @@ public class FlyService implements IFlyService{
         return resp;
     }
     
-    private static List<Asiento> asientos_solicitados_en(ReservaDto reservaDto ) {
+    private static List<Long> asientos_solicitados_en(ReservaDto reservaDto ) {
         ModelMapper modelMapper = new ModelMapper();
-        return reservaDto.getVuelo()
+        List<Asiento> asientos = reservaDto.getVuelo()
                 .getAsientos().stream()
                 .map(asientoDto -> modelMapper.map(asientoDto, Asiento.class))
                 .collect(Collectors.toList());
+        return asientos.stream().map(Asiento::getAsientoID).collect(Collectors.toList());
     }
     
     /*
