@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReservaDto {
     private Long numeroReserva;
-    private UsuarioDto usuario;
+    private Long usuarioID;
     private String fechaReserva;
     private boolean pagado;
     private List<AsientoDto> asientos;

@@ -8,10 +8,7 @@ import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.entity.Vuelo;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
-import CaC.Grupo2.FlySky.repository.AsientoRepository;
-import CaC.Grupo2.FlySky.repository.FlyRepository;
-import CaC.Grupo2.FlySky.repository.PagoRepository;
-import CaC.Grupo2.FlySky.repository.ReservaRepository;
+import CaC.Grupo2.FlySky.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 
 @Service
 //@Qualifier("flyService")
@@ -28,12 +27,14 @@ public class FlyService implements IFlyService{
     ReservaRepository reservaRepository;
     AsientoRepository asientoRepository;
     PagoRepository pagoRepository;
+    UsuarioRepository usuarioRepository;
 
-    public FlyService( FlyRepository flyRepository, ReservaRepository reservaRepository,AsientoRepository asientoRepository,PagoRepository pagoRepository) {
+    public FlyService( FlyRepository flyRepository, ReservaRepository reservaRepository,AsientoRepository asientoRepository,PagoRepository pagoRepository,UsuarioRepository usuarioRepository) {
         this.flyRepository = flyRepository;
         this.reservaRepository = reservaRepository;
         this.asientoRepository = asientoRepository;
         this.pagoRepository =pagoRepository;
+        this.usuarioRepository =usuarioRepository;
     }
 
 
@@ -78,7 +79,13 @@ public class FlyService implements IFlyService{
         Date fechaActual = new Date();
         ModelMapper modelMapper = new ModelMapper();
 
-        Usuario usuario = modelMapper.map(reservaDto.getUsuario(), Usuario.class);
+        Usuario usuario = usuarioRepository.findById(reservaDto.getUsuarioID())
+                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
+
+        if(usuario.getTipoUsuario() !=CLIENTE ){
+            throw new IllegalArgumentException("Por favor Registrese para reservar un vuelo");
+        }
+
         Vuelo vueloExistente = flyRepository.findById(reservaDto.getVueloID())
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el vuelo con el ID especificado"));
 
@@ -119,7 +126,7 @@ public class FlyService implements IFlyService{
         ReservaDto reservaDto1= new ReservaDto();
 
         reservaDto1.setNumeroReserva(persistReserva.getReservaID());
-        reservaDto1.setUsuario(modelMapper.map(persistReserva.getUsuario(), UsuarioDto.class));
+        reservaDto1.setUsuarioID(persistReserva.getUsuario().getUsuarioID());
 
         List<AsientoDto> asientosDto = new ArrayList<>();
 

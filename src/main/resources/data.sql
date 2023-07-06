@@ -37,3 +37,10 @@ VALUES ('1V', 'false','001'),
        --asientos vueloID 004
        ('1V', 'false','004'),
        ('1P', 'false','004');
+
+INSERT INTO usuarios (USUARIOID, NOMBRE_COMPLETO_USUARIO, TELEFONO, TIPO_USUARIO)
+VALUES (1, 'John Doe', '123456789', 0),
+       (2, 'Jane Smith', '987654321', 1),
+       (3, 'Michael Johnson', '555555555', 2),
+       (4, 'Jim Gavidia', '987654321', 2),
+       (5, 'Maria Fernandez', '555555555', 2);
