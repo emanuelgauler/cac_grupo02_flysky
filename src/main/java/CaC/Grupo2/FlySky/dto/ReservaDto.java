@@ -17,5 +17,6 @@ public class ReservaDto {
     private String fechaReserva;
     private boolean pagado;
     private List<AsientoDto> asientos;
+    private Long vueloID;
 
 }

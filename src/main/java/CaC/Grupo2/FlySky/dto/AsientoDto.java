@@ -8,7 +8,7 @@ import javax.persistence.Column;
 @Setter
 public class AsientoDto {
     private Long asientoID;
-    private String nombreAsiento;
+   private String nombreAsiento;
     private String pasajero;
     private boolean ocupado;
     private String ubicacion;

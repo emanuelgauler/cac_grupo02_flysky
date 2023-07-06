@@ -1,27 +1,39 @@
--- Vuelo( ID, Aerolínea, conexión, destino, horario, origen, precio );
-INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
-VALUES ('001', 'Jestmar', 'false', 'CiudadA', '2023-07-15', 'CiudadB', 150.50);
+INSERT INTO vuelos (VUELOID, AEROLINEA,ORIGEN, DESTINO, FECHA,CONEXION, PRECIO)
+VALUES ('001', 'Jestmar',  'Mendoza',           'Bs. As',  '2023-07-09 12:30',  'false', 150.50),
+       ('002', 'FlyBondi', 'Jujuy',             'Bs. As',  '2022-08-20 15:35',  'true',  200.75),
+       ('003', 'AirlineZ', 'Tierra del Fuego',  'Bs. As',  '2023-09-10 10:25',  'True',  180.25),
+       ('004', 'FlyBondi', 'mendoza',           'cordoba', '2023-08-15 15:25',  'false', 300.25),
+       ('005', 'Azul',     'Venezuela',         'Bs. As',  '2023-11-21 20:00',  'True',  1000.85);
 
-INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
-VALUES ('002', 'AirlineY', 'true', 'CiudadC', '2022-08-20', 'CiudadD', 200.75);
-
-INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
-VALUES ('003', 'AirlineZ', 'True', 'CiudadE', '2023-09-10', 'CiudadF', 180.25);
-
-INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
-VALUES ('004', 'Azul', 'True', 'mendoza', '2023-08-15', 'cordoba', 300.25);
-
-INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
-VALUES ('005', 'Azul', 'True', 'Venezuela', '2023-11-21', 'Argentina', 1000.85);
-
-
---Asiento( ID, Nombre asiento, ocupado, pasajero, ubicacion, vuelo_id )
-INSERT INTO ASIENTOS ( NOMBRE_ASIENTO, OCUPADO,VUELOID)
-VALUES ( '1A', 'false','001'),
-       ('1B', 'false', '001'),
-       ('1C', 'false','001'),
-       ('1D', 'false','001'),
-       ('2A', 'false','001'),
-       ('2B', 'false','001'),
-       ('2C', 'false','001'),
-       ('2D', 'false','001');
+INSERT INTO ASIENTOS (NOMBRE_ASIENTO, OCUPADO,VUELOID)
+VALUES ('1V', 'false','001'),
+       ('1P', 'false','001'),
+       ('2V', 'false','001'),
+       ('2P', 'false','001'),
+       ('3V', 'false','001'),
+       ('3P', 'false','001'),
+       ('4V', 'false','001'),
+       ('4P', 'false','001'),
+       ('5V', 'false','001'),
+       ('5P', 'false','001'),
+       ('6V', 'false','001'),
+       ('6P', 'false','001'),
+       --asientos vueloID 002
+       ('1V', 'false','002'),
+       ('1P', 'false','002'),
+       --asientos vueloID 003
+       ('1V', 'false', '003'),
+       ('1P', 'false', '003'),
+       ('2V', 'false', '003'),
+       ('2P', 'false', '003'),
+       ('3V', 'false', '003'),
+       ('3P', 'false', '003'),
+       ('4V', 'false', '003'),
+       ('4P', 'false', '003'),
+       ('5V', 'false', '003'),
+       ('5P', 'false', '003'),
+       ('6V', 'false', '003'),
+       ('6P', 'false', '003'),
+       --asientos vueloID 004
+       ('1V', 'false','004'),
+       ('1P', 'false','004');

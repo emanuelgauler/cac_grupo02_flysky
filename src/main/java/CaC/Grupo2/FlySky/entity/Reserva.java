@@ -28,6 +28,8 @@ public class Reserva {
     @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "reservaId")
     private List<Asiento> asientos;
+    @Column(name = "vueloID")
+    private Long vueloID;
 
     @Column(name = "estado_reserva")
     private boolean estadoReserva;

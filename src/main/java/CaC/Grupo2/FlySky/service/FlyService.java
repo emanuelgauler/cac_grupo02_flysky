@@ -79,6 +79,13 @@ public class FlyService implements IFlyService{
         ModelMapper modelMapper = new ModelMapper();
 
         Usuario usuario = modelMapper.map(reservaDto.getUsuario(), Usuario.class);
+        Vuelo vueloExistente = flyRepository.findById(reservaDto.getVueloID())
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el vuelo con el ID especificado"));
+
+        if(vueloExistente.getFecha().before(fechaActual)){
+            throw new IllegalArgumentException("el vuelo que intenta reserva su fecha ya caduco");
+        }
+
         List<Asiento> asientosReservados = new ArrayList<>();
 
         for (AsientoDto asientoDto : reservaDto.getAsientos()) {
@@ -88,7 +95,7 @@ public class FlyService implements IFlyService{
             if(asientoExistente.isOcupado()){
                 throw new IllegalArgumentException("el asiento ya se encuentra ocupado");
             }
-            asientoExistente.setNombreAsiento(asientoDto.getNombreAsiento());
+            //asientoExistente.setNombreAsiento(asientoDto.getNombreAsiento());
             asientoExistente.setPasajero(asientoDto.getPasajero());
             asientoExistente.setOcupado(true);
             asientoExistente.setUbicacion(asientoDto.getUbicacion());
@@ -100,6 +107,7 @@ public class FlyService implements IFlyService{
         reserva.setUsuario(usuario);
         reserva.setAsientos(asientosReservados);
         reserva.setFechaReserva(fechaActual);
+        reserva.setVueloID(reservaDto.getVueloID());
 
         Reserva persistReserva = reservaRepository.save(reserva);
 
@@ -122,9 +130,10 @@ public class FlyService implements IFlyService{
 
         reservaDto1.setAsientos(asientosDto);
         reservaDto1.setFechaReserva(fechaHoraActual);
+        reservaDto1.setVueloID(persistReserva.getVueloID());
 
         resp.setReserva(reservaDto1);
-        //resp.setMonto(asientosReservados.size() * persistReserva.getAsientos();
+        resp.setMonto(asientosReservados.size() * vueloExistente.getPrecio());
         resp.setMensaje("Su reserva se realizó con éxito...");
         return resp;
     }
