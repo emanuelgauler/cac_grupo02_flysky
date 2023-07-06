@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,8 +14,8 @@ import lombok.Setter;
 public class ReservaDto {
     private Long numeroReserva;
     private UsuarioDto usuario;
-    private VueloDto vuelo;
     private String fechaReserva;
     private boolean pagado;
+    private List<AsientoDto> asientos;
 
 }

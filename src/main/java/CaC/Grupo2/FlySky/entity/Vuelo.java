@@ -18,8 +18,9 @@ public class Vuelo {
     @Column(name = "vueloID")
     private Long vueloID;
 
-    @OneToMany(mappedBy = "vuelo",cascade = CascadeType.ALL)
-    private List<Reserva> reservas;
+    //@OneToMany(mappedBy = "vuelo",cascade = CascadeType.ALL)
+    //@Column(name = "reservas")
+    //private List<Reserva> reservas;
 
     @OneToMany(mappedBy = "vuelo",cascade = CascadeType.ALL)
     private List<Asiento> asientos;

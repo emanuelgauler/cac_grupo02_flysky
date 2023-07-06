@@ -31,4 +31,7 @@ public class Asiento {
     @Column(name = "ubicacion")
     private String ubicacion;
 
+    //@Column(name = "reservaId")
+    //private long reservaId;
+
 }

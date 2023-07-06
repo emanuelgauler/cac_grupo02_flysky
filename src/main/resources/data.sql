@@ -1,15 +1,27 @@
 -- Vuelo( ID, Aerolínea, conexión, destino, horario, origen, precio );
-insert into vuelos values(1, 'Aerolineas Argentinas', false, 'Mendoza', '2023-07-09 12:30', 'Bs. As', 45000.0),
-(2, 'FlyBondi', false, 'Jujuy', '2023-07-09 11:00', 'Bs. As', 42380.5),
-(3, 'Air France', true, 'Tierra del Fuego', '2023-07-10 02:00', 'Bs. As.', 58760.0),
-(4, 'FlyBondi', false, 'Tierra del Fuego', '2023-07-30 05:00', 'Bs. As.', 60600.5),
-(5, 'Aerolineas Argentinas', false, 'Mendoza', '2023-07-20 17:00', 'Bs. As.', 45000.0);
+INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
+VALUES ('001', 'Jestmar', 'false', 'CiudadA', '2023-07-15', 'CiudadB', 150.50);
+
+INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
+VALUES ('002', 'AirlineY', 'true', 'CiudadC', '2022-08-20', 'CiudadD', 200.75);
+
+INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
+VALUES ('003', 'AirlineZ', 'True', 'CiudadE', '2023-09-10', 'CiudadF', 180.25);
+
+INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
+VALUES ('004', 'Azul', 'True', 'mendoza', '2023-08-15', 'cordoba', 300.25);
+
+INSERT INTO vuelos (VUELOID, AEROLINEA, CONEXION, DESTINO, FECHA, ORIGEN, PRECIO)
+VALUES ('005', 'Azul', 'True', 'Venezuela', '2023-11-21', 'Argentina', 1000.85);
+
 
 --Asiento( ID, Nombre asiento, ocupado, pasajero, ubicacion, vuelo_id )
-insert into asientos values ( 1, '1V', false, null, 'ventanilla', 1 )
-, ( 2, '1P', false, null, 'pasillo', 1 )
-, ( 3, '2P', false, null, 'pasillo', 1 )
-, ( 4, '2V', false, null, 'ventanilla', 1 )
-, ( 5, '3V', false, null, 'ventanilla', 1 )
-, ( 6, '3P', false, null, 'pasillo', 1 )
-;
+INSERT INTO ASIENTOS ( NOMBRE_ASIENTO, OCUPADO,VUELOID)
+VALUES ( '1A', 'false','001'),
+       ('1B', 'false', '001'),
+       ('1C', 'false','001'),
+       ('1D', 'false','001'),
+       ('2A', 'false','001'),
+       ('2B', 'false','001'),
+       ('2C', 'false','001'),
+       ('2D', 'false','001');

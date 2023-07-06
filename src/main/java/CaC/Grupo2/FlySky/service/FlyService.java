@@ -79,12 +79,9 @@ public class FlyService implements IFlyService{
         ModelMapper modelMapper = new ModelMapper();
 
         Usuario usuario = modelMapper.map(reservaDto.getUsuario(), Usuario.class);
-        Vuelo vueloExistente = flyRepository.findById(reservaDto.getVuelo().getVueloID())
-                .orElseThrow(() -> new IllegalArgumentException("No se encontró el vuelo con el ID especificado"));
-
         List<Asiento> asientosReservados = new ArrayList<>();
 
-        for (AsientoDto asientoDto : reservaDto.getVuelo().getAsientos()) {
+        for (AsientoDto asientoDto : reservaDto.getAsientos()) {
             Asiento asientoExistente = asientoRepository.findById(asientoDto.getAsientoID())
                     .orElseThrow(() -> new IllegalArgumentException("No se encontró el asiento con el ID especificado"));
 
@@ -99,11 +96,9 @@ public class FlyService implements IFlyService{
             asientosReservados.add(asientoExistente);
         }
 
-        vueloExistente.setAsientos(asientosReservados);
-
         Reserva reserva = new Reserva();
         reserva.setUsuario(usuario);
-        reserva.setVuelo(vueloExistente);
+        reserva.setAsientos(asientosReservados);
         reserva.setFechaReserva(fechaActual);
 
         Reserva persistReserva = reservaRepository.save(reserva);
@@ -117,10 +112,19 @@ public class FlyService implements IFlyService{
 
         reservaDto1.setNumeroReserva(persistReserva.getReservaID());
         reservaDto1.setUsuario(modelMapper.map(persistReserva.getUsuario(), UsuarioDto.class));
-        reservaDto1.setVuelo(modelMapper.map(persistReserva.getVuelo(), VueloDto.class));
+
+        List<AsientoDto> asientosDto = new ArrayList<>();
+
+        for (Asiento asiento : persistReserva.getAsientos()) {
+            AsientoDto asientoDto = modelMapper.map(asiento, AsientoDto.class);
+            asientosDto.add(asientoDto);
+        }
+
+        reservaDto1.setAsientos(asientosDto);
         reservaDto1.setFechaReserva(fechaHoraActual);
 
         resp.setReserva(reservaDto1);
+        //resp.setMonto(asientosReservados.size() * persistReserva.getAsientos();
         resp.setMensaje("Su reserva se realizó con éxito...");
         return resp;
     }
