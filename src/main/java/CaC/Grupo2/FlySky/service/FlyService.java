@@ -226,7 +226,7 @@ public class FlyService implements IFlyService{
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró la reserva con el ID especificado"));
 
         if(haPasadoTiempoLimiteDePago(reservaExistente)){
-            throw new IllegalArgumentException("El tiempo maximos para pagar ya vencio, por favor realice otra reserva");
+            throw new IllegalArgumentException("El tiempo maximos para pagar vencio, por favor realice otra reserva");
         }
 
         if(pagoDto.getMonto() != reservaExistente.getMonto()){
