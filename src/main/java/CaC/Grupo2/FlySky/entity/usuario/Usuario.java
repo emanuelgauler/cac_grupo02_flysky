@@ -1,12 +1,16 @@
 package CaC.Grupo2.FlySky.entity.usuario;
 
 import CaC.Grupo2.FlySky.entity.Reserva;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Entity
 @Table(name = "usuarios")
@@ -16,8 +20,8 @@ public class Usuario {
     @Column(name = "usuarioID")
     private Long usuarioID;
 
-    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
-    private List<Reserva> reservas;
+    //@OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
+    //private List<Reserva> reservas;
 
     @Column(name = "tipo_usuario")
     private TipoUsuarioEnum tipoUsuario;
@@ -26,7 +30,7 @@ public class Usuario {
     private String nombreCompletoUsuario;
 
     @Column(name = "telefono")
-    private Long telefono;
+    private int telefono;
 
    }
 

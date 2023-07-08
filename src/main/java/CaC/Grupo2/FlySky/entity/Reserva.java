@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -22,15 +23,21 @@ public class Reserva {
     @JoinColumn(name = "usuarioID", nullable = false)
     private Usuario usuario;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "vueloID", nullable = false)
-    private Vuelo vuelo;
+    //@ManyToOne(cascade = CascadeType.PERSIST)
+    //@JoinColumn(name = "vueloID", nullable = false)
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "reservaId")
+    private List<Asiento> asientos;
+    @Column(name = "vueloID")
+    private Long vueloID;
 
     @Column(name = "estado_reserva")
     private boolean estadoReserva;
 
     @Column(name = "fecha_reserva")
     private Date fechaReserva;
+    @Column(name = "monto")
+    private double monto;
 
     @OneToOne(mappedBy = "reserva")
     private Pago pago;
