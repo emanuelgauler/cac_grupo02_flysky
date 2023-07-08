@@ -36,6 +36,8 @@ public class Reserva {
 
     @Column(name = "fecha_reserva")
     private Date fechaReserva;
+    @Column(name = "monto")
+    private double monto;
 
     @OneToOne(mappedBy = "reserva")
     private Pago pago;

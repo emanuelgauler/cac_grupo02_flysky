@@ -10,16 +10,21 @@ import CaC.Grupo2.FlySky.exception.NotFoundException;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 
 @Service
+@Component
 //@Qualifier("flyService")
 public class FlyService implements IFlyService{
 
@@ -102,7 +107,7 @@ public class FlyService implements IFlyService{
             if(asientoExistente.isOcupado()){
                 throw new IllegalArgumentException("el asiento ya se encuentra ocupado");
             }
-            //asientoExistente.setNombreAsiento(asientoDto.getNombreAsiento());
+            setFechaExpiracionAsiento(asientoExistente,10);
             asientoExistente.setPasajero(asientoDto.getPasajero());
             asientoExistente.setOcupado(true);
             asientoExistente.setUbicacion(asientoDto.getUbicacion());
@@ -115,6 +120,7 @@ public class FlyService implements IFlyService{
         reserva.setAsientos(asientosReservados);
         reserva.setFechaReserva(fechaActual);
         reserva.setVueloID(reservaDto.getVueloID());
+        reserva.setMonto(asientosReservados.size() * vueloExistente.getPrecio());
 
         Reserva persistReserva = reservaRepository.save(reserva);
 
@@ -141,8 +147,38 @@ public class FlyService implements IFlyService{
 
         resp.setReserva(reservaDto1);
         resp.setMonto(asientosReservados.size() * vueloExistente.getPrecio());
-        resp.setMensaje("Su reserva se realizó con éxito...");
+        resp.setMensaje("Su reserva se realizó con éxito... Tienes 10 minutos para realizar el pago");
         return resp;
+
+    }
+
+    public void setFechaExpiracionAsiento(Asiento asiento, int duracionReservaEnMin) {
+        //if (asiento.getFechaExpiracion() != null && asiento.getFechaExpiracion().after(new Date())) {
+          //  throw new IllegalArgumentException("El asiento ya está reservado");
+        //}
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MINUTE, duracionReservaEnMin); // Duración de la reserva en minutos
+        Date fechaExpiracion = calendar.getTime();
+        asiento.setFechaExpiracion(fechaExpiracion);
+    }
+
+
+    // Tarea programada para liberar los asientos expirados
+    @Scheduled(fixedDelay = 10000) //600000 cada 10 minutos
+    public void liberarAsientosExpirados() {
+        List<Asiento> asientos = asientoRepository.findAll();
+        Date fechaActual = new Date();
+
+        for (Asiento asiento : asientos) {
+            if (asiento.getFechaExpiracion() != null && asiento.getFechaExpiracion().before(fechaActual)) {
+                asiento.setFechaExpiracion(null);
+                asiento.setPasajero(null);
+                asiento.setOcupado(false);
+                asiento.setUbicacion(null);
+                asientoRepository.save(asiento);
+            }
+        }
     }
 
 /*
@@ -170,7 +206,17 @@ public class FlyService implements IFlyService{
 
 
 
+
+
      */
+
+    public boolean haPasadoTiempoLimiteDePago(Reserva reserva) {
+        Date fechaActual = new Date();
+        Date fechaCreacion = reserva.getFechaReserva();
+        long tiempoTranscurrido = fechaActual.getTime() - fechaCreacion.getTime();
+        long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
+        return minutosTranscurridos > 10;
+    }
     @Override
     public String pagarReserva(PagoDto pagoDto) {
         ModelMapper modelMapper = new ModelMapper();
@@ -179,19 +225,35 @@ public class FlyService implements IFlyService{
         Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró la reserva con el ID especificado"));
 
-        Pago pago= reservaExistente.getPago();
+        if(haPasadoTiempoLimiteDePago(reservaExistente)){
+            throw new IllegalArgumentException("El tiempo maximos para pagar ya vencio, por favor realice otra reserva");
+        }
 
-        if(pagoDto.getMonto() != pago.getMonto()){
+        if(pagoDto.getMonto() != reservaExistente.getMonto()){
             throw new NotFoundException("No ingreso el monto correcto");
         }
+
+        Pago pago = new Pago();
 
         pago.setPagado(true);
         pago.setTipoPago(pagoDto.getTipoPago());
         pago.setFechaPago(fechaActual);
-        pago.setMonto(pago.getMonto());
+        pago.setMonto(pagoDto.getMonto());
         pago.setReserva(reservaExistente);
 
         Pago persistPago = pagoRepository.save(pago);
+
+        reservaExistente.setEstadoReserva(true);
+        List<Asiento> asientos = reservaExistente.getAsientos();
+
+        for (Asiento asiento : asientos) {
+            if (asiento.getFechaExpiracion() != null){
+                asiento.setFechaExpiracion(null);
+                asientoRepository.save(asiento);
+            }
+        }
+
+        reservaRepository.save(reservaExistente);
 
         return "Reserva pagada exitosamente";
     }
