@@ -13,5 +13,5 @@ public interface IFlyService {
 
     List<ReservaDto> buscarTodasReservas();
 
-    List<RespReservaDto> getHistorial(SolHistorialDto solHistorialDto);
+     RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto);
 }

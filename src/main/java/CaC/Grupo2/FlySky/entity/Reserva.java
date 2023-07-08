@@ -34,6 +34,6 @@ public class Reserva {
     @Column(name = "fecha_reserva")
     private Date fechaReserva;
 
-    @OneToOne(mappedBy = "reserva")
-    private Pago pago;
+    //@OneToOne(mappedBy = "reserva")
+    //private Pago pago;
 }

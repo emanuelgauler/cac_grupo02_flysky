@@ -3,6 +3,7 @@ package CaC.Grupo2.FlySky.service;
 import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Reserva;
+import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.entity.Vuelo;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
@@ -148,30 +149,64 @@ public class FlyService implements IFlyService{
         return reservaDto;
     }
 
+    //US4: Agente de vtas accede al historial de reservas de un cliente dado
     @Override
-    public List<RespReservaDto> getHistorial(SolHistorialDto solHistorialDto){
+    public RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto){
 
         Optional<Usuario> usuarioCta = usuarioRepository.findById(solHistorialDto.getUsuarioIdConsulta());
+        if (usuarioCta.isEmpty() ) {
+            throw new NotFoundException("ERROR: No encuentro USUARIO en el sistema");
+        }
+        if (usuarioCta.get().getTipoUsuario()!= TipoUsuarioEnum.AGENTE_VENTAS){
+            throw new NotFoundException("ERROR: Usted no es Agente de ventas, no puede realizar la consulta");
+        }
+
         System.out.println(usuarioCta);
 
         //Preguntar si el usuario es agente
 
         Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdRespuenta());
+        if (usuarioRta.isEmpty() ) {
+            throw new NotFoundException("ERROR: No encuentro a ese USUARIO en el sistema");
+        }
+        if(usuarioRta.get().getTipoUsuario()!=TipoUsuarioEnum.CLIENTE){
+            throw new NotFoundException("ERROR: El usuario por el que se quiere consultar no es cliente");
+        }
         System.out.println(usuarioRta);
 
         List<Reserva> respTodasReservas = reservaRepository.findAll();
+
+        System.out.println("ESTAS TODAS LAS RESERVAS");
         System.out.println(respTodasReservas);
+        System.out.println(respTodasReservas.getClass().getSimpleName());
 
 
-        List<Reserva> histViajes = respTodasReservas.stream().filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta())).collect(Collectors.toList());
-        System.out.println(histViajes);
+        List<Reserva> histReservas = respTodasReservas.stream()
+                                    .filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta()))
+                                    .collect(Collectors.toList());
+        //System.out.println(histReservas.get(0).isEstadoReserva());
+        //System.out.println(histReservas.get(1).isEstadoReserva());
+        //System.out.println(histReservas.get(2).isEstadoReserva());
+        //System.out.println(histReservas.getClass().getSimpleName());
 
+        List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isEstadoReserva).collect(Collectors.toList());
+        //System.out.println(histReservasTrue);
+        //System.out.println(histReservas.get(0).isEstadoReserva());
 
+        if (histReservasTrue.isEmpty() ) {
+            throw new NotFoundException("ERROR: Ese cliente no realizó ningún vuelo");
+        }
+        //System.out.println(histReservas.getClass().getSimpleName());
+        //el usuario no tiene vuelos
 
+        ModelMapper mapperUs4 = new ModelMapper();
+        List<ReservaDto> histReservaDto = new ArrayList<>();
+        histReservasTrue.forEach(c-> histReservaDto.add(mapperUs4.map(c,ReservaDto.class)));
 
-
-
-        return null;
-    }
+        RtaHistorialDto respUs4= new RtaHistorialDto();
+        respUs4.setReservaDto(histReservaDto);
+        respUs4.setMensaje("Historial y Preferencias de Vuelo del Cliente");
+        return respUs4;
+        }
 
 }
