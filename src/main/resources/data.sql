@@ -1,5 +1,5 @@
 INSERT INTO vuelos (VUELOID, AEROLINEA,ORIGEN, DESTINO, FECHA,CONEXION, PRECIO)
-VALUES ('001', 'Jestmar',  'Mendoza',           'Bs. As',  '2023-07-09 12:30',  'false', 150.50),
+VALUES ('001', 'Jestmar',  'Mendoza',           'Bs. As',  '2023-09-09 12:30',  'false', 150.50),
        ('002', 'FlyBondi', 'Jujuy',             'Bs. As',  '2022-08-20 15:35',  'true',  200.75),
        ('003', 'AirlineZ', 'Tierra del Fuego',  'Bs. As',  '2023-09-10 10:25',  'True',  180.25),
        ('004', 'FlyBondi', 'mendoza',           'cordoba', '2023-08-15 15:25',  'false', 300.25),
@@ -22,7 +22,8 @@ VALUES ('1V', 'false','001'),
        ('1V', 'false','002'),
        ('1P', 'false','002'),
        --asientos vueloID 003
-       ('1V', 'false', '003'),
+       ('1V', 'true', '003'),
+       ('1V', 'true', '003'),
        ('1P', 'false', '003'),
        ('2V', 'false', '003'),
        ('2P', 'false', '003'),
@@ -44,3 +45,16 @@ VALUES (1, 'John Doe', '123456789', 0),
        (3, 'Michael Johnson', '555555555', 2),
        (4, 'Jim Gavidia', '987654321', 2),
        (5, 'Maria Fernandez', '555555555', 2);
+
+--Reserva (Reserva_Id, Estado_Reserva, Fecha_Reserva, UsuarioID, VueloID)
+ INSERT INTO reservas (reservaID, Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
+ VALUES (1,TRUE,'2023-08-10 02:00',3,1,100),
+        (2,false,'2023-07-07 02:00',3,3,150),
+        (3,false,'2023-08-10 02:00',4,3,150);
+
+--cargo una los datos del asiento id 15
+UPDATE ASIENTOS
+SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 2, PASAJERO = 'jim gavidia', UBICACION = 'ventana'
+WHERE ASIENTOID = 15;;
+
+
