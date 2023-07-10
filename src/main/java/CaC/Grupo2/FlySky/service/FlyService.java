@@ -42,7 +42,6 @@ public class FlyService implements IFlyService{
         this.usuarioRepository =usuarioRepository;
     }
 
-
     @Override
     public List<VueloDto> buscarTodosVuelos() {
         ModelMapper mapper = new ModelMapper();
@@ -159,7 +158,6 @@ public class FlyService implements IFlyService{
         Date fechaExpiracion = calendar.getTime();
         asiento.setFechaExpiracion(fechaExpiracion);
     }
-
 
     // Tarea programada para liberar los asientos expirados
     @Scheduled(fixedDelay = 10000) //600000 cada 10 minutos
