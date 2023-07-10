@@ -4,22 +4,22 @@ import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
+import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.entity.Vuelo;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.*;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 
@@ -153,9 +153,6 @@ public class FlyService implements IFlyService{
     }
 
     public void setFechaExpiracionAsiento(Asiento asiento, int duracionReservaEnMin) {
-        //if (asiento.getFechaExpiracion() != null && asiento.getFechaExpiracion().after(new Date())) {
-          //  throw new IllegalArgumentException("El asiento ya está reservado");
-        //}
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.MINUTE, duracionReservaEnMin); // Duración de la reserva en minutos
@@ -215,22 +212,25 @@ public class FlyService implements IFlyService{
         Date fechaCreacion = reserva.getFechaReserva();
         long tiempoTranscurrido = fechaActual.getTime() - fechaCreacion.getTime();
         long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
-        return minutosTranscurridos > 10;
+        return minutosTranscurridos >= 10;
     }
     @Override
     public String pagarReserva(PagoDto pagoDto) {
-        ModelMapper modelMapper = new ModelMapper();
         Date fechaActual = new Date();
 
         Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró la reserva con el ID especificado"));
+
+        if(reservaExistente.isEstadoReserva()){
+           throw new IllegalArgumentException("ya se realizo el pago de esta reserva");
+        }
 
         if(haPasadoTiempoLimiteDePago(reservaExistente)){
             throw new IllegalArgumentException("El tiempo maximos para pagar vencio, por favor realice otra reserva");
         }
 
         if(pagoDto.getMonto() != reservaExistente.getMonto()){
-            throw new NotFoundException("No ingreso el monto correcto");
+            throw new IllegalArgumentException("No ingreso el monto correcto");
         }
 
         Pago pago = new Pago();
@@ -256,6 +256,92 @@ public class FlyService implements IFlyService{
         reservaRepository.save(reservaExistente);
 
         return "Reserva pagada exitosamente";
+    }
+
+    @Override
+    public RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto){
+
+        Optional<Usuario> usuarioCta = usuarioRepository.findById(solHistorialDto.getUsuarioIdConsulta());
+        if (usuarioCta.isEmpty() ) {
+            throw new NotFoundException("ERROR: No encuentro USUARIO en el sistema");
+        }
+        if (usuarioCta.get().getTipoUsuario()!= TipoUsuarioEnum.AGENTE_VENTAS){
+            throw new NotFoundException("ERROR: Usted no es Agente de ventas, no puede realizar la consulta");
+        }
+
+
+        Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdRespuenta());
+        if (usuarioRta.isEmpty() ) {
+            throw new NotFoundException("ERROR: No encuentro a ese USUARIO en el sistema");
+        }
+        if(usuarioRta.get().getTipoUsuario()!=TipoUsuarioEnum.CLIENTE){
+            throw new NotFoundException("ERROR: El usuario por el que se quiere consultar no es cliente");
+        }
+        //System.out.println(usuarioRta);
+
+        List<Reserva> respTodasReservas = reservaRepository.findAll();
+
+        List<Reserva> histReservas = respTodasReservas.stream()
+                .filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta()))
+                .collect(Collectors.toList());
+
+
+        List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isEstadoReserva).collect(Collectors.toList());
+        //System.out.println(histReservasTrue.get(0).getReservaID());
+        //System.out.println(histReservasTrue.get(0).isEstadoReserva());
+        //System.out.println(histReservasTrue.get(0).getVueloID());
+
+
+        if (histReservasTrue.isEmpty() ) {
+            throw new NotFoundException("ERROR: Ese cliente no realizó ningún vuelo");
+        }
+
+
+        List<Vuelo> respTodosVuelos = flyRepository.findAll();
+        List<Vuelo> histVueloCli = respTodosVuelos.stream()
+                .filter(e->histReservasTrue.stream()
+                        .anyMatch(e2-> Objects.equals(e2.getVueloID(), e.getVueloID())))
+                .collect(Collectors.toList());
+
+        //System.out.println(histVueloCli.get(0).getOrigen());
+
+
+        //return null;
+
+        ModelMapper mapperUs4 = new ModelMapper();
+
+        // Creamos una configuración personalizada para el mapeo
+        mapperUs4.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        /*mapperUs4.createTypeMap(Reserva.class, VueloDtoSA.class)
+                .addMapping(Reserva::getUsuario, VueloDtoSA::setUsuario);*/
+
+        mapperUs4.createTypeMap(Vuelo.class, VueloDtoSA.class)
+                .addMapping(Vuelo::getVueloID, VueloDtoSA::setVueloID)
+                .addMapping(Vuelo::getAerolinea,VueloDtoSA::setAerolinea)
+                .addMapping(Vuelo::getOrigen,VueloDtoSA::setOrigen)
+                .addMapping(Vuelo::getDestino,VueloDtoSA::setDestino);
+
+
+        // Creamos una lista de VueloDtoSA a partir de la lista de Vuelo utilizando el mapeo personalizado
+        List<VueloDtoSA> resultados = histVueloCli.stream()
+                .map(h -> mapperUs4.map(h, VueloDtoSA.class))
+                .collect(Collectors.toList());
+
+        /*List<VueloDtoSA> resultados = Stream.concat(
+                histReservasTrue.stream().map(h -> mapperUs4.map(h, VueloDtoSA.class)),
+                histVueloCli.stream().map(h -> mapperUs4.map(h, VueloDtoSA.class)))
+                .collect(Collectors.toList());*/
+
+        //List<VueloDto> histVueloDto = new ArrayList<>();
+        //histVueloCli.forEach(c-> histVueloDto.add(mapperUs4.map(c,VueloDto.class)));
+
+        //System.out.println(histReservaDto.get(0).getNumeroReserva());
+
+        RtaHistorialDto respUs4= new RtaHistorialDto();
+        respUs4.setVuelosUsuarios(resultados);
+        respUs4.setMensaje("Historial y Preferencias de Vuelo del Cliente "+usuarioRta.get().getNombreCompletoUsuario());
+        return respUs4;
     }
 
 

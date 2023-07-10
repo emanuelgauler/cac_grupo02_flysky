@@ -2,6 +2,7 @@ package CaC.Grupo2.FlySky.controller;
 
 import CaC.Grupo2.FlySky.dto.PagoDto;
 import CaC.Grupo2.FlySky.dto.ReservaDto;
+import CaC.Grupo2.FlySky.dto.SolHistorialDto;
 import CaC.Grupo2.FlySky.entity.Pago.TipoPago;
 import CaC.Grupo2.FlySky.service.FlyService;
 import CaC.Grupo2.FlySky.service.IFlyService;
@@ -49,6 +50,13 @@ public class FlyController {
         return new ResponseEntity<>(flyService.buscarTodasReservas(), HttpStatus.OK);
     }
  */
+//User_Story_4
+    /* Como agente de ventas, quiero poder acceder al historial de reservas y preferencias de viaje
+    de un cliente, para ofrecerle un servicio personalizado y promociones relevantes */
+    @GetMapping("/getHistorial")
+    public ResponseEntity<?> getHistorial(@RequestBody SolHistorialDto solHistorialDto) {
+        return new ResponseEntity<>(flyService.getHistorial(solHistorialDto), HttpStatus.OK);
+}
 
 
 }

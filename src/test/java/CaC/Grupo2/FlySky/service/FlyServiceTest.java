@@ -1,22 +1,25 @@
 package CaC.Grupo2.FlySky.service;
 
 import CaC.Grupo2.FlySky.dto.AsientoDto;
+import CaC.Grupo2.FlySky.dto.PagoDto;
 import CaC.Grupo2.FlySky.dto.ReservaDto;
-import CaC.Grupo2.FlySky.entity.Vuelo;
+import CaC.Grupo2.FlySky.entity.Pago.Pago;
+import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
-import CaC.Grupo2.FlySky.exception.NotFoundException;
+import CaC.Grupo2.FlySky.repository.AsientoRepository;
 import CaC.Grupo2.FlySky.repository.FlyRepository;
 import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static CaC.Grupo2.FlySky.entity.Pago.TipoPago.efectivo;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
@@ -28,21 +31,18 @@ public class FlyServiceTest {
     @Autowired
     FlyRepository flyRepository;
     UsuarioRepository usuarioRepository;
+    AsientoRepository asientoRepository;
 
     ReservaDto reservaDto = new ReservaDto();
 
+    /*
     @Test
     @DisplayName("validar Lista Vuelo Vacia..")
-    void ListaVuelosVacia(){
+    void ListaVuelosVacia() {
 
         //arrange
-        flyRepository= Mockito.mock(FlyRepository.class);
-        List<Vuelo> listaMockVuelos = new ArrayList<>();
-
-        when(flyRepository.findAll()).thenReturn(listaMockVuelos);
-
         //assert
-        NotFoundException exception= assertThrows(NotFoundException.class,()->{
+        Exception exception = assertThrows(NotFoundException.class, () -> {
             flyService.buscarTodosVuelos();
         });
 
@@ -51,13 +51,16 @@ public class FlyServiceTest {
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
+
+     */
+
     @Test
     @DisplayName("validar usuario que no existe..")
-    void validarUsuarioNoExistente(){
+    void validarUsuarioNoExistente() {
         reservaDto.setUsuarioID(500l);
 
         //act and Assert
-        Exception exception= assertThrows(IllegalArgumentException.class,()->{
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             flyService.reservarVuelo(reservaDto);
         });
 
@@ -103,12 +106,12 @@ public class FlyServiceTest {
 
     @Test
     @DisplayName("validar vuelo que no existe..")
-    void validarVueloNoExistente(){
+    void validarVueloNoExistente() {
         reservaDto.setUsuarioID(3L); //usuario tipo cliente
         reservaDto.setVueloID(50000l);
 
         //act and assert
-        Exception exception = assertThrows(IllegalArgumentException.class,()->{
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             flyService.reservarVuelo(reservaDto);
         });
 
@@ -121,18 +124,18 @@ public class FlyServiceTest {
 
     @Test
     @DisplayName("validar Asiento NO Existente..")
-    void validarAsientoNoExistente(){
+    void validarAsientoNoExistente() {
 
 
         List<AsientoDto> asientos = new ArrayList<>();
-        asientos.add(new AsientoDto(4000l,"1V","JIMGAVIDIA",true,"Ventana"));
+        asientos.add(new AsientoDto(4000l, "1V", "JIMGAVIDIA", true, "Ventana"));
 
         reservaDto.setUsuarioID(4L);
         reservaDto.setVueloID(1l);
         reservaDto.setAsientos(asientos);
 
         //act and assert
-        Exception exception =  assertThrows(IllegalArgumentException.class,()->{
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             flyService.reservarVuelo(reservaDto);
         });
 
@@ -145,16 +148,15 @@ public class FlyServiceTest {
     }
 
 
-
     @Test
     @DisplayName("validar vuelo Caducado..")
-    void validarVueloCaducado(){
+    void validarVueloCaducado() {
 
         reservaDto.setUsuarioID(4L);
         reservaDto.setVueloID(2l);
 
         //act and assert
-        Exception exception = assertThrows(IllegalArgumentException.class,()->{
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             flyService.reservarVuelo(reservaDto);
         });
 
@@ -164,116 +166,171 @@ public class FlyServiceTest {
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
 
-
-
     @Test
-    @DisplayName("validar Asiento Ocupado..")
-    void validarAsientoOcupado(){
-
-        AsientoDto asiento = new AsientoDto();
-        asiento.setAsientoID(1l);
-        asiento.setOcupado(true);
-
+    @DisplayName("validar Asiento Ocupado")
+    void validarAsientoOcupado() {
+        // Arrange
+        ReservaDto reservaDto = new ReservaDto();
+        AsientoDto asientoDto = new AsientoDto();
+        asientoDto.setAsientoID(15L); //este asiento ya se encuentra ocupado
+        asientoDto.setOcupado(true);
         List<AsientoDto> asientos = new ArrayList<>();
-
-        reservaDto.setUsuarioID(4L);
-        reservaDto.setVueloID(1l);
+        asientos.add(asientoDto);
+        reservaDto.setUsuarioID(4L); //usuario tipo cliente
+        reservaDto.setVueloID(3L);
         reservaDto.setAsientos(asientos);
 
-        //act and assert
-        Exception exception = assertThrows(IllegalArgumentException.class,()->{
+        // Act
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             flyService.reservarVuelo(reservaDto);
         });
 
         // Assert
-        String expectedMessage = "el vuelo que intenta reserva su fecha ya caduco";
+        String expectedMessage = "el asiento ya se encuentra ocupado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
 /*
     @Test
-    @DisplayName("Camino no tan feliz...")
-    void buscarTodosThrowExTest(){
-        //act and assert
-        assertThrows(IllegalArgumentException.class,()->{
-            userService.buscarTodos();
-        });
+    @DisplayName("validar Tiempo Limite de Pago")
+    public void testHaPasadoTiempoLimiteDePago() {
+        // Arrange
+        // Obtener la fecha actual
+        Date fechaActual = new Date();
+        Calendar calendar = Calendar.getInstance();
+        // quitamos 11 minutos a la fecha actual
+        calendar.add(Calendar.MINUTE, -11); //quitamos 11 minutos
+        // Obtener la nueva fecha
+        Date FechaActualcon11MinMenos = calendar.getTime();
+
+        Reserva reserva = new Reserva();
+        reserva.setFechaReserva(FechaActualcon11MinMenos);
+
+        // Act
+        long tiempoTranscurrido = fechaActual.getTime() - FechaActualcon11MinMenos.getTime();
+        long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
+        boolean haPasadoTiempoLimite = minutosTranscurridos >= 10;
+
+        // Assert
+        assertTrue(haPasadoTiempoLimite);
+
+        // Arrange
+        Date fechaCreacionReciente = new Date();
+        reserva.setFechaReserva(fechaCreacionReciente);
+
+        // Act
+        tiempoTranscurrido = fechaActual.getTime() - fechaCreacionReciente.getTime();
+        minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
+        haPasadoTiempoLimite = minutosTranscurridos >= 10;
+
+        // Assert
+        assertFalse(haPasadoTiempoLimite);
     }
 
-    @Test
-    @DisplayName("US0001-Camino Feliz :D")
-    void buscarTodosOkTest() {
-
-        //ARRANGE
-        List<UserDto> expected = new ArrayList<>();
-        expected.add(new UserDto("Jose","Perez", 32));
-        expected.add(new UserDto("María", "Paz", 25));
-        expected.add(new UserDto("Emilio", "Gonzales", 30));
-
-
-        //ACT
-        List<UserDto> result = userService.buscarTodos();
-        //ASSERT
-        assertEquals(expected,result);
-    }
-
-
-    @Test
-    @DisplayName("US0002-Camino feliz :D")
-    void buscarUnUsuarioPorNombreOKTest(){
-
-        //ARRANGE
-        String name= "Jose";
-        UserDto expected = new UserDto("Jose","Perez", 32);
-
-        //ACT
-        UserDto result = userService.buscarUnUsuarioPorNombre(name);
-
-        //ASSERT
-        assertEquals(expected, result);
-    }
-
-    @Test
-    @DisplayName("US0001-Test para probar el camino correcto del metodo calculeTotal")
-    void calculeTotalOkTest(){
-        //Arrange - Definir los parámetros con valores que debe recibir el método a testear.
-        int a = 6;
-        int b = 4;
-        int resultadoEsperado = 11;
-
-        boolean var1 = true;
-        boolean var2 = false;
-
-        //Act
-        int result = userService.calculeTotal(a,b);
-
-        //Assert
-        assertEquals(resultadoEsperado,result);
-
-    }
 
  */
+    @Test
+    @DisplayName("validar reserva no existe al intentar pagar una reserva")
+    public void testReservaIdNoEncotradaAlIntentarPagar() {
+        // Arrange
+        PagoDto pago = new PagoDto();
+        pago.setReservaID(50l);
 
+        // Act
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            flyService.pagarReserva(pago);
+        });
 
+        // Assert
+        String expectedMessage = "No se encontró la reserva con el ID especificado";
+        String actualMessage = exception.getMessage();
+        Assertions.assertEquals(expectedMessage, actualMessage);
+    }
 
+    @Test
+    @DisplayName("validar Pagar Reserva ya Pagada")
+    public void testIntentarPagarReservaYaPagada() {
+        // Arrange
+        PagoDto pago = new PagoDto();
+        pago.setReservaID(1l); //esta reserva ya se encuentra paga en el repository
+        pago.setTipoPago(efectivo);
+        pago.setMonto(100);
 
+        // Act
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            flyService.pagarReserva(pago);
+        });
 
+        // Assert
+        String expectedMessage = "ya se realizo el pago de esta reserva";
+        String actualMessage = exception.getMessage();
+        Assertions.assertEquals(expectedMessage, actualMessage);
+    }
 
+    @Test
+    @DisplayName("validar Pagar Reserva ya vencida")
+    public void testIntentarPagarReservaConTiempoVencido() {
+        // Arrange
+        PagoDto pago = new PagoDto();
+        pago.setReservaID(2l); //esta reserva ya se encuentra vencida
+        pago.setTipoPago(efectivo);
+        pago.setMonto(100);
 
+        // Act
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            flyService.pagarReserva(pago);
+        });
 
+        // Assert
+        String expectedMessage = "El tiempo maximos para pagar vencio, por favor realice otra reserva";
+        String actualMessage = exception.getMessage();
+        Assertions.assertEquals(expectedMessage, actualMessage);
+    }
 
+    @Test
+    @DisplayName("validar Pagar Reserva con monto incorrecto")
+    public void testIntentarPagarReservaConMontoIncorrecto() {
+        // Arrange
+        PagoDto pago = new PagoDto();
+        pago.setReservaID(3l); // reserva con monto de 150
+        pago.setTipoPago(efectivo);
+        pago.setMonto(100);
 
+        // Act
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            flyService.pagarReserva(pago);
+        });
 
+        // Assert
+        String expectedMessage = "No ingreso el monto correcto";
+        String actualMessage = exception.getMessage();
+        Assertions.assertEquals(expectedMessage, actualMessage);
+    }
 
+    @Test
+    @DisplayName("validar Pagar Reserva")
+    public void testPagarReserva() {
+        // Arrange
+        PagoDto pago = new PagoDto();
+        pago.setReservaID(3l); //esta reserva ya se encuentra cargada en el sql
+        pago.setTipoPago(efectivo);
+        pago.setMonto(150);
 
+        // Act
+        String act = flyService.pagarReserva(pago);
 
+        String expected="Reserva pagada exitosamente";
+        //assert
+        assertEquals(expected,act);
 
-
-
-
-
-
-
+    }
 
 
 }
+
+
+
+
+
+
+

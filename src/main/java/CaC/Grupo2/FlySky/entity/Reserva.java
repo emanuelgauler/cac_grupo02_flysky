@@ -25,7 +25,7 @@ public class Reserva {
 
     //@ManyToOne(cascade = CascadeType.PERSIST)
     //@JoinColumn(name = "vueloID", nullable = false)
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "reservaId")
     private List<Asiento> asientos;
     @Column(name = "vueloID")
