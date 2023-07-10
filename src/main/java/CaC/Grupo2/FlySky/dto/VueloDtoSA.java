@@ -9,10 +9,10 @@ import java.util.List;
 @Setter
 public class VueloDtoSA {
         //private UsuarioDto usuario;
-        private Long vueloID;
+        //private Long vueloID;
         private String origen;
         private String destino;
-        //private Date fecha;
+        //private String fecha;
         //private double precio;
         //private boolean conexion;
         private String aerolinea;
