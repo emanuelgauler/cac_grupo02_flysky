@@ -1,7 +1,5 @@
 package CaC.Grupo2.FlySky.service;
 
-
-
 import CaC.Grupo2.FlySky.dto.AsientoDto;
 import CaC.Grupo2.FlySky.dto.ReservaDto;
 import CaC.Grupo2.FlySky.dto.RespReservaDto;
@@ -12,8 +10,6 @@ import CaC.Grupo2.FlySky.entity.Vuelo;
 import CaC.Grupo2.FlySky.dto.RtaHistorialDto;
 import CaC.Grupo2.FlySky.dto.SolHistorialDto;
 import CaC.Grupo2.FlySky.dto.VueloDtoSA;
-import CaC.Grupo2.FlySky.entity.Reserva;
-import CaC.Grupo2.FlySky.entity.Vuelo;
 import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
@@ -24,13 +20,11 @@ import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -189,7 +183,7 @@ public class FlyServiceTestConMock {
         assertEquals(1, respReservaDto.getReserva().getAsientos().size());
         assertEquals("Jim Gavidia", respReservaDto.getReserva().getAsientos().get(0).getPasajero());
         assertEquals("Ventana", respReservaDto.getReserva().getAsientos().get(0).getUbicacion());
-        assertEquals("Su reserva se realizó con éxito... Tienes 10 minutos para realizar el pago", respReservaDto.getMensaje());
+        assertEquals("Su reserva se realizo con exito... Tienes 10 minutos para realizar el pago", respReservaDto.getMensaje());
     }
 
     @Test
@@ -201,8 +195,8 @@ public class FlyServiceTestConMock {
         long usIdRespuesta = 2;
 
         SolHistorialDto solHistorialDtoMock = new SolHistorialDto();
-        solHistorialDtoMock.setUsuarioIdConsulta(usIdConsulta);
-        solHistorialDtoMock.setUsuarioIdRespuenta(usIdRespuesta);
+        solHistorialDtoMock.setUsuarioIdAgente(usIdConsulta);
+        solHistorialDtoMock.setUsuarioIdCliente(usIdRespuesta);
 
         Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS,"Max Power",8810);
         Usuario usRespuestaMock = new Usuario(2L,TipoUsuarioEnum.CLIENTE,"Pechugas Laru",9412);

@@ -19,9 +19,6 @@ public class Usuario {
     @Column(name = "usuarioID")
     private Long usuarioID;
 
-    //@OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
-    //private List<Reserva> reservas;
-
     @Column(name = "tipo_usuario")
     private TipoUsuarioEnum tipoUsuario;
 

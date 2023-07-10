@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RtaHistorialDto {
     private String mensaje;
-    //private List<UsuarioDto>;
+
     private List<VueloDtoSA> vuelosUsuarios;
 
 }

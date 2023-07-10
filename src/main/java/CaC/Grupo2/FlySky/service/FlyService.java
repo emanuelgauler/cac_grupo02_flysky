@@ -25,7 +25,6 @@ import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 
 @Service
 @Component
-//@Qualifier("flyService")
 public class FlyService implements IFlyService{
 
     FlyRepository flyRepository;
@@ -91,7 +90,7 @@ public class FlyService implements IFlyService{
         }
 
         Vuelo vueloExistente = flyRepository.findById(reservaDto.getVueloID())
-                .orElseThrow(() -> new IllegalArgumentException("No se encontró el vuelo con el ID especificado"));
+                .orElseThrow(() -> new IllegalArgumentException("No se encontro el vuelo con el ID especificado"));
 
         if(vueloExistente.getFecha().before(fechaActual)){
             throw new IllegalArgumentException("el vuelo que intenta reserva su fecha ya caduco");
@@ -146,7 +145,7 @@ public class FlyService implements IFlyService{
 
         resp.setReserva(reservaDto1);
         resp.setMonto(asientosReservados.size() * vueloExistente.getPrecio());
-        resp.setMensaje("Su reserva se realizó con éxito... Tienes 10 minutos para realizar el pago");
+        resp.setMensaje("Su reserva se realizo con exito... Tienes 10 minutos para realizar el pago");
         return resp;
 
     }
@@ -176,34 +175,6 @@ public class FlyService implements IFlyService{
         }
     }
 
-/*
-    @Override
-    public List<ReservaDto> buscarTodasReservas() {
-        ModelMapper mapper = new ModelMapper();
-
-        List<Reserva> reservaEnt = reservaRepository.findAll();
-
-        if (reservaEnt.isEmpty() ) {
-            throw new NotFoundException("la lista de reserva esta vacía");
-        }
-        /*
-        reservaEnt.stream().filter(reserva -> {
-            reserva.getVuelo().
-        });
-
-
-         */
-    /*
-        List<ReservaDto> reservaDto = new ArrayList<>();
-        reservaEnt.forEach(c-> reservaDto.add(mapper.map(c,ReservaDto.class)));
-        return reservaDto;
-    }
-
-
-
-
-
-     */
 
     public boolean haPasadoTiempoLimiteDePago(Reserva reserva) {
         Date fechaActual = new Date();
@@ -217,9 +188,9 @@ public class FlyService implements IFlyService{
         Date fechaActual = new Date();
 
         Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
-                .orElseThrow(() -> new IllegalArgumentException("No se encontró la reserva con el ID especificado"));
+                .orElseThrow(() -> new IllegalArgumentException("No se encontro la reserva con el ID especificado"));
 
-        if(reservaExistente.isEstadoReserva()){
+        if(reservaExistente.isReservaConfirmada()){
            throw new IllegalArgumentException("ya se realizo el pago de esta reserva");
         }
 
@@ -243,7 +214,7 @@ public class FlyService implements IFlyService{
 
         Pago persistPago = pagoRepository.save(pago);
 
-        reservaExistente.setEstadoReserva(true);
+        reservaExistente.setReservaConfirmada(true);
         List<Asiento> asientos = reservaExistente.getAsientos();
 
         for (Asiento asiento : asientos) {
@@ -261,7 +232,7 @@ public class FlyService implements IFlyService{
     @Override
     public RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto){
 
-        Optional<Usuario> usuarioCta = usuarioRepository.findById(solHistorialDto.getUsuarioIdConsulta());
+        Optional<Usuario> usuarioCta = usuarioRepository.findById(solHistorialDto.getUsuarioIdAgente());
         if (usuarioCta.isEmpty() ) {
             throw new NotFoundException("ERROR: No encuentro USUARIO en el sistema");
         }
@@ -269,31 +240,23 @@ public class FlyService implements IFlyService{
             throw new NotFoundException("ERROR: Usted no es Agente de ventas, no puede realizar la consulta");
         }
 
-
-        Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdRespuenta());
+        Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdCliente());
         if (usuarioRta.isEmpty() ) {
             throw new NotFoundException("ERROR: No encuentro a ese USUARIO en el sistema");
         }
         if(usuarioRta.get().getTipoUsuario()!=TipoUsuarioEnum.CLIENTE){
             throw new NotFoundException("ERROR: El usuario por el que se quiere consultar no es cliente");
         }
-        //System.out.println(usuarioRta);
+
 
         Usuario usuarioSolicitado = usuarioRta.get();
         List<Reserva> histReservas = reservaRepository.findByUsuario(usuarioSolicitado);
 
-        /*List<Reserva> respTodasReservas = reservaRepository.findAll();
-
-       List<Reserva> histReservas = respTodasReservas.stream()
-                .filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta()))
-                .collect(Collectors.toList());*/
-
-
-        List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isEstadoReserva).collect(Collectors.toList());
+        List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isReservaConfirmada).collect(Collectors.toList());
 
 
         if (histReservasTrue.isEmpty() ) {
-            throw new NotFoundException("ERROR: Ese cliente no realizó ningún vuelo");
+            throw new NotFoundException("ERROR: Ese cliente no realizo ningún vuelo");
         }
 
 
@@ -308,9 +271,6 @@ public class FlyService implements IFlyService{
         // Creamos una configuración personalizada para el mapeo
         mapperUs4.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        //SimpleDateFormat formato2 = new SimpleDateFormat("dd-MM-yyyy");
-
-        //.addMapping(Vuelo::getFecha, VueloDtoSA::setFecha)
         mapperUs4.createTypeMap(Vuelo.class, VueloDtoSA.class)
                 //.addMappings(mapping -> mapping.map(Vuelo::getFecha, (dest, value) -> dest.setFecha(formato2.format(value))))
                 .addMapping(Vuelo::getFecha, VueloDtoSA::setFecha)

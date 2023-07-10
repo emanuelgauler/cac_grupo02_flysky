@@ -45,7 +45,7 @@ VALUES (1, 'John Doe', '123456789', 0),
        (4, 'Jim Gavidia', '37573255', 2),
        (5, 'Maria Fernandez', '51515548', 2);
 
- INSERT INTO reservas (Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
+ INSERT INTO reservas (Reserva_Confirmada, Fecha_Reserva, UsuarioID,VueloID,monto)
  VALUES (TRUE,'2023-08-10 02:00',3,1,100),
         (false,'2023-07-07 02:00',3,3,150),
         (false,'2023-10-10 02:00',4,3,150),

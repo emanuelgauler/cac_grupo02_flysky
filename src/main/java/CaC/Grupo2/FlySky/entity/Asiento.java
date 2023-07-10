@@ -35,7 +35,5 @@ public class Asiento {
     @Column(name = "fecha_expiracion")
     private Date fechaExpiracion;
 
-    //@Column(name = "reservaId")
-    //private long reservaId;
 
 }

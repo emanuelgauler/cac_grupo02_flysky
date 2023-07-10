@@ -73,14 +73,14 @@ public class IntegracionTest {
         String responseContent = mvcResult.getResponse().getContentAsString();
         JsonNode jsonResponse = objectMapper.readTree(responseContent);
         String mensaje = jsonResponse.get("mensaje").asText();
-        assertEquals("Su reserva se realizÃ³ con Ã©xito... Tienes 10 minutos para realizar el pago",mensaje);
+        assertEquals("Su reserva se realizo con exito... Tienes 10 minutos para realizar el pago",mensaje);
     }
 
     @Test
     void testReservaVueloNoExistente() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ErrorDto errorDto = new ErrorDto("No se encontró el vuelo con el ID especificado");
+        ErrorDto errorDto = new ErrorDto("No se encontro el vuelo con el ID especificado");
 
         String rutaArchivo = "src/test/java/CaC/Grupo2/FlySky/controller/jsonReservaVueloNoExistete.json";
 
@@ -90,7 +90,6 @@ public class IntegracionTest {
 
         ObjectWriter writer = new ObjectMapper()
                 .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
-                .configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true)
                 .writer();
 
         String jsonPayload = objectMapper.writeValueAsString(reservaDto);
@@ -103,6 +102,12 @@ public class IntegracionTest {
                         .andReturn();
 
         assertEquals(errorExpected,mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    void testPagarReserva(){
+
+
     }
 
 

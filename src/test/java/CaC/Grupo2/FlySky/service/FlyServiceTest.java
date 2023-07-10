@@ -1,7 +1,6 @@
 package CaC.Grupo2.FlySky.service;
 
 import CaC.Grupo2.FlySky.dto.*;
-import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -99,7 +97,7 @@ public class FlyServiceTest {
         });
 
         // Assert
-        String expectedMessage = "No se encontró el vuelo con el ID especificado";
+        String expectedMessage = "No se encontro el vuelo con el ID especificado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
 
@@ -173,36 +171,8 @@ public class FlyServiceTest {
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
-    /*
 
-    @Test
-    @DisplayName("validar Reserva Vuelo")
-    void validarRservaVueloOK() throws ParseException {
-        // Arrange
-        AsientoDto asientoDto = new AsientoDto();
-        asientoDto.setAsientoID(18L);//este asiento libre
-        asientoDto.setPasajero("jim Gavidia");
-        asientoDto.setUbicacion("pasillo");
-        List<AsientoDto> asientos = new ArrayList<>();
-        asientos.add(asientoDto);
 
-        ReservaDto reservaDto = new ReservaDto();
-        reservaDto.setUsuarioID(3l); //usuario tipo cliente
-        reservaDto.setVueloID(3l);
-        reservaDto.setAsientos(asientos);
-
-        // Act
-        RespReservaDto result = flyService.reservarVuelo(reservaDto);
-
-        String mensajeExperado ="Su reserva se realizó con éxito... Tienes 10 minutos para realizar el pago";
-        // Assertions
-        Assertions.assertEquals(mensajeExperado, result.getMensaje());
-
-    }
-
-     */
-
-/*
     @Test
     @DisplayName("validar Tiempo Limite de Pago")
     public void testHaPasadoTiempoLimiteDePago() {
@@ -240,7 +210,6 @@ public class FlyServiceTest {
     }
 
 
- */
     @Test
     @DisplayName("validar reserva no existe al intentar pagar una reserva")
     public void testReservaIdNoEncotradaAlIntentarPagar() {
@@ -254,7 +223,7 @@ public class FlyServiceTest {
         });
 
         // Assert
-        String expectedMessage = "No se encontró la reserva con el ID especificado";
+        String expectedMessage = "No se encontro la reserva con el ID especificado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
