@@ -12,8 +12,6 @@ public interface IFlyService {
 
     RespReservaDto reservarVuelo(ReservaDto reservaDto) throws ParseException;
 
-   // List<ReservaDto> buscarTodasReservas();
-
     String pagarReserva(PagoDto pagoDto);
 
     RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto);

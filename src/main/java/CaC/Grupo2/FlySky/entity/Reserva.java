@@ -1,8 +1,7 @@
 package CaC.Grupo2.FlySky.entity;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +10,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+
 @Entity
 @Table(name = "reservas")
 public class Reserva {
@@ -23,16 +27,14 @@ public class Reserva {
     @JoinColumn(name = "usuarioID", nullable = false)
     private Usuario usuario;
 
-    //@ManyToOne(cascade = CascadeType.PERSIST)
-    //@JoinColumn(name = "vueloID", nullable = false)
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "reservaId")
     private List<Asiento> asientos;
     @Column(name = "vueloID")
     private Long vueloID;
 
-    @Column(name = "estado_reserva")
-    private boolean estadoReserva;
+    @Column(name = "reserva_confirmada")
+    private boolean reservaConfirmada;
 
     @Column(name = "fecha_reserva")
     private Date fechaReserva;

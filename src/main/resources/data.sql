@@ -6,7 +6,7 @@ VALUES ('001', 'Jestmar',  'Mendoza',           'Bs. As',  '2023-09-09 12:30',  
        ('005', 'Azul',     'Venezuela',         'Bs. As',  '2023-11-21 20:00',  'True',  1000.85);
 
 INSERT INTO ASIENTOS (NOMBRE_ASIENTO, OCUPADO,VUELOID)
-VALUES ('1V', 'false','001'),
+VALUES ('1V', 'true','001'),
        ('1P', 'false','001'),
        ('2V', 'false','001'),
        ('2P', 'false','001'),
@@ -42,10 +42,10 @@ INSERT INTO usuarios (USUARIOID, NOMBRE_COMPLETO_USUARIO, TELEFONO, TIPO_USUARIO
 VALUES (1, 'John Doe', '123456789', 0),
        (2, 'Jane Smith', '987654321', 1),
        (3, 'Michael Johnson', '555555555', 2),
-       (4, 'Jim Gavidia', '987654321', 2),
-       (5, 'Maria Fernandez', '555555555', 2);
+       (4, 'Jim Gavidia', '37573255', 2),
+       (5, 'Maria Fernandez', '51515548', 2);
 
- INSERT INTO reservas (Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
+ INSERT INTO reservas (Reserva_Confirmada, Fecha_Reserva, UsuarioID,VueloID,monto)
  VALUES (TRUE,'2023-08-10 02:00',3,1,100),
         (false,'2023-07-07 02:00',3,3,150),
         (false,'2023-10-10 02:00',4,3,150),
@@ -65,5 +65,7 @@ WHERE ASIENTOID = 16;
 UPDATE ASIENTOS
 SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 4, PASAJERO = 'Max', UBICACION = 'ventana'
 WHERE ASIENTOID = 15;
+
+
 
 

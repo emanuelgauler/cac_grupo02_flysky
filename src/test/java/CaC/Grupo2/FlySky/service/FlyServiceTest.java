@@ -1,9 +1,6 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.AsientoDto;
-import CaC.Grupo2.FlySky.dto.PagoDto;
-import CaC.Grupo2.FlySky.dto.ReservaDto;
-import CaC.Grupo2.FlySky.entity.Pago.Pago;
+import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
@@ -12,6 +9,7 @@ import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,29 +28,12 @@ public class FlyServiceTest {
 
     @Autowired
     FlyRepository flyRepository;
+    @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
     AsientoRepository asientoRepository;
 
     ReservaDto reservaDto = new ReservaDto();
-
-    /*
-    @Test
-    @DisplayName("validar Lista Vuelo Vacia..")
-    void ListaVuelosVacia() {
-
-        //arrange
-        //assert
-        Exception exception = assertThrows(NotFoundException.class, () -> {
-            flyService.buscarTodosVuelos();
-        });
-
-        // Assert
-        String expectedMessage = "la lista de vuelos esta vacía";
-        String actualMessage = exception.getMessage();
-        Assertions.assertEquals(expectedMessage, actualMessage);
-    }
-
-     */
 
     @Test
     @DisplayName("validar usuario que no existe..")
@@ -116,7 +97,7 @@ public class FlyServiceTest {
         });
 
         // Assert
-        String expectedMessage = "No se encontró el vuelo con el ID especificado";
+        String expectedMessage = "No se encontro el vuelo con el ID especificado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
 
@@ -190,7 +171,8 @@ public class FlyServiceTest {
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
-/*
+
+
     @Test
     @DisplayName("validar Tiempo Limite de Pago")
     public void testHaPasadoTiempoLimiteDePago() {
@@ -228,7 +210,6 @@ public class FlyServiceTest {
     }
 
 
- */
     @Test
     @DisplayName("validar reserva no existe al intentar pagar una reserva")
     public void testReservaIdNoEncotradaAlIntentarPagar() {
@@ -242,7 +223,7 @@ public class FlyServiceTest {
         });
 
         // Assert
-        String expectedMessage = "No se encontró la reserva con el ID especificado";
+        String expectedMessage = "No se encontro la reserva con el ID especificado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }

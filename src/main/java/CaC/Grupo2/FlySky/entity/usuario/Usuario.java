@@ -1,10 +1,7 @@
 package CaC.Grupo2.FlySky.entity.usuario;
 
 import CaC.Grupo2.FlySky.entity.Reserva;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@EqualsAndHashCode
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -19,9 +18,6 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usuarioID")
     private Long usuarioID;
-
-    //@OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
-    //private List<Reserva> reservas;
 
     @Column(name = "tipo_usuario")
     private TipoUsuarioEnum tipoUsuario;
