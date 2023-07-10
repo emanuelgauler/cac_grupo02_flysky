@@ -1,8 +1,6 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.AsientoDto;
-import CaC.Grupo2.FlySky.dto.PagoDto;
-import CaC.Grupo2.FlySky.dto.ReservaDto;
+import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
@@ -12,6 +10,8 @@ import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,29 +30,12 @@ public class FlyServiceTest {
 
     @Autowired
     FlyRepository flyRepository;
+    @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
     AsientoRepository asientoRepository;
 
     ReservaDto reservaDto = new ReservaDto();
-
-    /*
-    @Test
-    @DisplayName("validar Lista Vuelo Vacia..")
-    void ListaVuelosVacia() {
-
-        //arrange
-        //assert
-        Exception exception = assertThrows(NotFoundException.class, () -> {
-            flyService.buscarTodosVuelos();
-        });
-
-        // Assert
-        String expectedMessage = "la lista de vuelos esta vacía";
-        String actualMessage = exception.getMessage();
-        Assertions.assertEquals(expectedMessage, actualMessage);
-    }
-
-     */
 
     @Test
     @DisplayName("validar usuario que no existe..")
@@ -190,6 +173,35 @@ public class FlyServiceTest {
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
+    /*
+
+    @Test
+    @DisplayName("validar Reserva Vuelo")
+    void validarRservaVueloOK() throws ParseException {
+        // Arrange
+        AsientoDto asientoDto = new AsientoDto();
+        asientoDto.setAsientoID(18L);//este asiento libre
+        asientoDto.setPasajero("jim Gavidia");
+        asientoDto.setUbicacion("pasillo");
+        List<AsientoDto> asientos = new ArrayList<>();
+        asientos.add(asientoDto);
+
+        ReservaDto reservaDto = new ReservaDto();
+        reservaDto.setUsuarioID(3l); //usuario tipo cliente
+        reservaDto.setVueloID(3l);
+        reservaDto.setAsientos(asientos);
+
+        // Act
+        RespReservaDto result = flyService.reservarVuelo(reservaDto);
+
+        String mensajeExperado ="Su reserva se realizó con éxito... Tienes 10 minutos para realizar el pago";
+        // Assertions
+        Assertions.assertEquals(mensajeExperado, result.getMensaje());
+
+    }
+
+     */
+
 /*
     @Test
     @DisplayName("validar Tiempo Limite de Pago")

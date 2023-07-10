@@ -233,6 +233,8 @@ public class FlyService implements IFlyService{
             throw new IllegalArgumentException("No ingreso el monto correcto");
         }
 
+        //Falta Validar Tipo de Pago!!!
+
         Pago pago = new Pago();
 
         pago.setPagado(true);

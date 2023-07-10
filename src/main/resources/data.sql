@@ -42,8 +42,8 @@ INSERT INTO usuarios (USUARIOID, NOMBRE_COMPLETO_USUARIO, TELEFONO, TIPO_USUARIO
 VALUES (1, 'John Doe', '123456789', 0),
        (2, 'Jane Smith', '987654321', 1),
        (3, 'Michael Johnson', '555555555', 2),
-       (4, 'Jim Gavidia', '987654321', 2),
-       (5, 'Maria Fernandez', '555555555', 2);
+       (4, 'Jim Gavidia', '37573255', 2),
+       (5, 'Maria Fernandez', '51515548', 2);
 
  INSERT INTO reservas (Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
  VALUES (TRUE,'2023-08-10 02:00',3,1,100),

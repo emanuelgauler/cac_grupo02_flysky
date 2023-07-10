@@ -1,0 +1,17 @@
+{
+  "usuarioID": 3,
+  "vueloID":40000,
+  "asientos":
+  [
+    {
+      "asientoID": 27,
+      "pasajero": "jim",
+      "ubicacion": "ventana"
+    },
+    {
+      "asientoID": 28,
+      "pasajero": "pedro",
+      "ubicacion": "pasillo"
+    }
+  ]
+}
