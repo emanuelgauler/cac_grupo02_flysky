@@ -281,11 +281,14 @@ public class FlyService implements IFlyService{
         }
         //System.out.println(usuarioRta);
 
-        List<Reserva> respTodasReservas = reservaRepository.findAll();
+       Usuario usuarioSolicitado = usuarioRta.get();
+       List<Reserva> histReservas = reservaRepository.findByUsuario(usuarioSolicitado);
 
-        List<Reserva> histReservas = respTodasReservas.stream()
+        /*List<Reserva> respTodasReservas = reservaRepository.findAll();
+
+       List<Reserva> histReservas = respTodasReservas.stream()
                 .filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
 
         List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isEstadoReserva).collect(Collectors.toList());
@@ -301,6 +304,7 @@ public class FlyService implements IFlyService{
 
         List<Vuelo> respTodosVuelos = flyRepository.findAll();
         List<Vuelo> histVueloCli = respTodosVuelos.stream()
+<<<<<<< HEAD
                 .filter(e->histReservasTrue.stream()
                         .anyMatch(e2-> Objects.equals(e2.getVueloID(), e.getVueloID())))
                 .collect(Collectors.toList());
@@ -309,17 +313,31 @@ public class FlyService implements IFlyService{
 
 
         //return null;
+=======
+                                   .filter(e->histReservasTrue.stream()
+                                   .anyMatch(e2-> Objects.equals(e2.getVueloID(), e.getVueloID())))
+                                    .collect(Collectors.toList());
+>>>>>>> d61d4453502b269d146bba7ecf7dabe1e9f0e05a
 
         ModelMapper mapperUs4 = new ModelMapper();
 
         // Creamos una configuración personalizada para el mapeo
         mapperUs4.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
+<<<<<<< HEAD
         /*mapperUs4.createTypeMap(Reserva.class, VueloDtoSA.class)
                 .addMapping(Reserva::getUsuario, VueloDtoSA::setUsuario);*/
 
         mapperUs4.createTypeMap(Vuelo.class, VueloDtoSA.class)
                 .addMapping(Vuelo::getVueloID, VueloDtoSA::setVueloID)
+=======
+         //SimpleDateFormat formato2 = new SimpleDateFormat("dd-MM-yyyy");
+
+        //.addMapping(Vuelo::getFecha, VueloDtoSA::setFecha)
+        mapperUs4.createTypeMap(Vuelo.class, VueloDtoSA.class)
+                //.addMappings(mapping -> mapping.map(Vuelo::getFecha, (dest, value) -> dest.setFecha(formato2.format(value))))
+                .addMapping(Vuelo::getFecha, VueloDtoSA::setFecha)
+>>>>>>> d61d4453502b269d146bba7ecf7dabe1e9f0e05a
                 .addMapping(Vuelo::getAerolinea,VueloDtoSA::setAerolinea)
                 .addMapping(Vuelo::getOrigen,VueloDtoSA::setOrigen)
                 .addMapping(Vuelo::getDestino,VueloDtoSA::setDestino);
@@ -329,6 +347,7 @@ public class FlyService implements IFlyService{
         List<VueloDtoSA> resultados = histVueloCli.stream()
                 .map(h -> mapperUs4.map(h, VueloDtoSA.class))
                 .collect(Collectors.toList());
+<<<<<<< HEAD
 
         /*List<VueloDtoSA> resultados = Stream.concat(
                 histReservasTrue.stream().map(h -> mapperUs4.map(h, VueloDtoSA.class)),
@@ -339,6 +358,8 @@ public class FlyService implements IFlyService{
         //histVueloCli.forEach(c-> histVueloDto.add(mapperUs4.map(c,VueloDto.class)));
 
         //System.out.println(histReservaDto.get(0).getNumeroReserva());
+=======
+>>>>>>> d61d4453502b269d146bba7ecf7dabe1e9f0e05a
 
         RtaHistorialDto respUs4= new RtaHistorialDto();
         respUs4.setVuelosUsuarios(resultados);

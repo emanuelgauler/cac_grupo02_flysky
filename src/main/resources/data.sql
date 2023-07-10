@@ -6,7 +6,7 @@ VALUES ('001', 'Jestmar',  'Mendoza',           'Bs. As',  '2023-09-09 12:30',  
        ('005', 'Azul',     'Venezuela',         'Bs. As',  '2023-11-21 20:00',  'True',  1000.85);
 
 INSERT INTO ASIENTOS (NOMBRE_ASIENTO, OCUPADO,VUELOID)
-VALUES ('1V', 'false','001'),
+VALUES ('1V', 'true','001'),
        ('1P', 'false','001'),
        ('2V', 'false','001'),
        ('2P', 'false','001'),
@@ -45,11 +45,20 @@ VALUES (1, 'John Doe', '123456789', 0),
        (4, 'Jim Gavidia', '37573255', 2),
        (5, 'Maria Fernandez', '51515548', 2);
 
+<<<<<<< HEAD
  INSERT INTO reservas (Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
  VALUES (TRUE,'2023-08-10 02:00',3,1,100),
         (false,'2023-07-07 02:00',3,3,150),
         (false,'2023-10-10 02:00',4,3,150),
         (true,'2023-08-10 02:00',3,3,150);
+=======
+--Reserva (Reserva_Id, Estado_Reserva, Fecha_Reserva, UsuarioID, VueloID)
+ INSERT INTO reservas (reservaID, Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
+ VALUES (1,TRUE,'2023-08-10 02:00',3,'003',100),
+        (2,false,'2023-07-07 02:00',3,'003',150),
+        (3,false,'2023-08-10 02:00',4,'003',150),
+        (4,true,'2023-08-10 02:00',3,'001',150);
+>>>>>>> d61d4453502b269d146bba7ecf7dabe1e9f0e05a
 
 --cargo una los datos del asiento id 1 a la reserva id 1
 UPDATE ASIENTOS
@@ -65,5 +74,14 @@ WHERE ASIENTOID = 16;
 UPDATE ASIENTOS
 SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 4, PASAJERO = 'Max', UBICACION = 'ventana'
 WHERE ASIENTOID = 15;
+
+SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 1, PASAJERO = 'jim gavidia', UBICACION = 'ventana'
+WHERE ASIENTOID = 1;
+
+UPDATE ASIENTOS
+SET OCUPADO = 'true', VUELOID = '001', RESERVA_ID = 4, PASAJERO = 'Max', UBICACION = 'ventana'
+WHERE ASIENTOID = 15;
+;
+
 
 

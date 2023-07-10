@@ -1,7 +1,6 @@
 package CaC.Grupo2.FlySky.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +9,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Data
+
 @Entity
 @Table(name = "vuelos")
 public class Vuelo {
