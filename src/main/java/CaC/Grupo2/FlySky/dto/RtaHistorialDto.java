@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RtaHistorialDto {
-    private List<ReservaDto> reservaDto;
+    //private List<UsuarioDto>;
+    private List<VueloDto> vuelosUsuarios;
     private String mensaje;
 }

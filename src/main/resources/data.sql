@@ -48,13 +48,13 @@ VALUES (1, 'John Doe', '123456789', 0),
 
 --Reserva (Reserva_Id, Estado_Reserva, Fecha_Reserva, UsuarioID, VueloID)
  INSERT INTO reservas (reservaID, Estado_Reserva, Fecha_Reserva, UsuarioID,VueloID,monto)
- VALUES (1,TRUE,'2023-08-10 02:00',3,1,100),
+ VALUES (1,TRUE,'2023-08-10 02:00',3,'003',100),
         (2,false,'2023-07-07 02:00',3,3,150),
         (3,false,'2023-08-10 02:00',4,3,150);
 
 --cargo una los datos del asiento id 15
 UPDATE ASIENTOS
-SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 2, PASAJERO = 'jim gavidia', UBICACION = 'ventana'
+SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 1, PASAJERO = 'jim gavidia', UBICACION = 'ventana'
 WHERE ASIENTOID = 15;;
 
 

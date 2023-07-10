@@ -286,18 +286,35 @@ public class FlyService implements IFlyService{
 
 
         List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isEstadoReserva).collect(Collectors.toList());
+        System.out.println(histReservasTrue.get(0).getReservaID());
+        System.out.println(histReservasTrue.get(0).isEstadoReserva());
+        System.out.println(histReservasTrue.get(0).getVueloID());
 
 
         if (histReservasTrue.isEmpty() ) {
             throw new NotFoundException("ERROR: Ese cliente no realizó ningún vuelo");
         }
 
+
+        List<Vuelo> respTodosVuelos = flyRepository.findAll();
+        List<Vuelo> histVueloCli = respTodosVuelos.stream()
+                                   .filter(e->histReservasTrue.stream()
+                                   .anyMatch(e2-> Objects.equals(e2.getVueloID(), e.getVueloID())))
+                                    .collect(Collectors.toList());
+
+        System.out.println(histVueloCli.get(0).getOrigen());
+
+
+        //return null;
+
         ModelMapper mapperUs4 = new ModelMapper();
-        List<ReservaDto> histReservaDto = new ArrayList<>();
-        histReservasTrue.forEach(c-> histReservaDto.add(mapperUs4.map(c,ReservaDto.class)));
+        List<VueloDto> histVueloDto = new ArrayList<>();
+        histVueloCli.forEach(c-> histVueloDto.add(mapperUs4.map(c,VueloDto.class)));
+
+        //System.out.println(histReservaDto.get(0).getNumeroReserva());
 
         RtaHistorialDto respUs4= new RtaHistorialDto();
-        respUs4.setReservaDto(histReservaDto);
+        respUs4.setVuelosUsuarios(histVueloDto);
         respUs4.setMensaje("Historial y Preferencias de Vuelo del Cliente");
         return respUs4;
     }
