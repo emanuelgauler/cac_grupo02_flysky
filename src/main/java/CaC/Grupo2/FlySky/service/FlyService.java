@@ -279,11 +279,14 @@ public class FlyService implements IFlyService{
         }
         //System.out.println(usuarioRta);
 
-        List<Reserva> respTodasReservas = reservaRepository.findAll();
+       Usuario usuarioSolicitado = usuarioRta.get();
+       List<Reserva> histReservas = reservaRepository.findByUsuario(usuarioSolicitado);
 
-        List<Reserva> histReservas = respTodasReservas.stream()
+        /*List<Reserva> respTodasReservas = reservaRepository.findAll();
+
+       List<Reserva> histReservas = respTodasReservas.stream()
                 .filter(e->e.getUsuario().getUsuarioID().equals(solHistorialDto.getUsuarioIdRespuenta()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
 
         List<Reserva> histReservasTrue = histReservas.stream().filter(Reserva::isEstadoReserva).collect(Collectors.toList());
@@ -310,6 +313,7 @@ public class FlyService implements IFlyService{
         //.addMapping(Vuelo::getFecha, VueloDtoSA::setFecha)
         mapperUs4.createTypeMap(Vuelo.class, VueloDtoSA.class)
                 //.addMappings(mapping -> mapping.map(Vuelo::getFecha, (dest, value) -> dest.setFecha(formato2.format(value))))
+                .addMapping(Vuelo::getFecha, VueloDtoSA::setFecha)
                 .addMapping(Vuelo::getAerolinea,VueloDtoSA::setAerolinea)
                 .addMapping(Vuelo::getOrigen,VueloDtoSA::setOrigen)
                 .addMapping(Vuelo::getDestino,VueloDtoSA::setDestino);
