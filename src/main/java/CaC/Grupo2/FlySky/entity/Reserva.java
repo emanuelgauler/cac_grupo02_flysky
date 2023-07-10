@@ -3,6 +3,7 @@ import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "reservas")
 public class Reserva {
