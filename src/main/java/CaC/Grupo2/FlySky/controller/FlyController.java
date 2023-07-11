@@ -47,7 +47,15 @@ public class FlyController {
     @GetMapping("/getHistorial")
     public ResponseEntity<?> getHistorial(@RequestBody SolHistorialDto solHistorialDto) {
         return new ResponseEntity<>(flyService.getHistorial(solHistorialDto), HttpStatus.OK);
-}
+    }
+
+    @GetMapping("/getVentasDiarias")
+    public ResponseEntity<?> getVentasDiarias() {
+        return new ResponseEntity<>(flyService.getVentasDiarias(), HttpStatus.OK);
+    }
+
+
+
 
 
 }

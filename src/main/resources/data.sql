@@ -58,7 +58,7 @@ WHERE ASIENTOID = 1;
 
 --cargo una los datos del asiento id 16 a la reserva id 3
 UPDATE ASIENTOS
-SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 3, PASAJERO = 'Jim Gavidia', UBICACION = 'pasillo', FECHA_EXPIRACION ='2023-10-10 11:04:35.162'
+SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 3, PASAJERO = 'Jim Gavidia', UBICACION = 'pasillo'--, FECHA_EXPIRACION ='2023-10-10 11:04:35.162'
 WHERE ASIENTOID = 16;
 
 --cargo una los datos del asiento id 15 a la reserva id 4

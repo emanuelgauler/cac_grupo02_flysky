@@ -32,8 +32,8 @@ public class Asiento {
     @Column(name = "ubicacion")
     private String ubicacion;
 
-    @Column(name = "fecha_expiracion")
-    private Date fechaExpiracion;
+//    @Column(name = "fecha_expiracion")
+ //   private Date fechaExpiracion;
 
 
 }

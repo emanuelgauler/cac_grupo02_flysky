@@ -15,4 +15,6 @@ public interface IFlyService {
     String pagarReserva(PagoDto pagoDto);
 
     RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto);
+
+    Object getVentasDiarias();
 }

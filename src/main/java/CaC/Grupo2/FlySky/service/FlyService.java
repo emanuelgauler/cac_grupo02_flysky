@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 
+
+import CaC.Grupo2.FlySky.helperDate.DateFormatHelper;
+
+
 @Service
 @Component
 public class FlyService implements IFlyService{
@@ -105,7 +109,7 @@ public class FlyService implements IFlyService{
             if(asientoExistente.isOcupado()){
                 throw new IllegalArgumentException("el asiento ya se encuentra ocupado");
             }
-            setFechaExpiracionAsiento(asientoExistente,10);
+            //setFechaExpiracionAsiento(asientoExistente,10);
             asientoExistente.setPasajero(asientoDto.getPasajero());
             asientoExistente.setOcupado(true);
             asientoExistente.setUbicacion(asientoDto.getUbicacion());
@@ -155,12 +159,28 @@ public class FlyService implements IFlyService{
         calendar.setTime(new Date());
         calendar.add(Calendar.MINUTE, duracionReservaEnMin); // Duración de la reserva en minutos
         Date fechaExpiracion = calendar.getTime();
-        asiento.setFechaExpiracion(fechaExpiracion);
+        //asiento.setFechaExpiracion(fechaExpiracion);
     }
 
-    // Tarea programada para liberar los asientos expirados
+    // Tarea programada para liberar las reservas expirados /no pagadas
     @Scheduled(fixedDelay = 10000) //600000 cada 10 minutos
-    public void liberarAsientosExpirados() {
+    public void liberarReservasExpiradas() {
+        List<Reserva> reservas =reservaRepository.findAll();
+
+        for(Reserva reserva: reservas){
+            if(haPasadoTiempoLimiteDePago(reserva) && !reserva.isReservaConfirmada()){
+                List<Asiento> asientos = reserva.getAsientos();
+                for (Asiento asiento : asientos) {
+                    //asiento.setFechaExpiracion(null);
+                    asiento.setPasajero(null);
+                    asiento.setOcupado(false);
+                    asiento.setUbicacion(null);
+                    asientoRepository.save(asiento);
+                }
+            }
+
+        }
+        /*
         List<Asiento> asientos = asientoRepository.findAll();
         Date fechaActual = new Date();
 
@@ -172,7 +192,8 @@ public class FlyService implements IFlyService{
                 asiento.setUbicacion(null);
                 asientoRepository.save(asiento);
             }
-        }
+
+         */
     }
 
 
@@ -181,7 +202,7 @@ public class FlyService implements IFlyService{
         Date fechaCreacion = reserva.getFechaReserva();
         long tiempoTranscurrido = fechaActual.getTime() - fechaCreacion.getTime();
         long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
-        return minutosTranscurridos >= 10;
+        return minutosTranscurridos >= 1;
     }
     @Override
     public String pagarReserva(PagoDto pagoDto) {
@@ -217,12 +238,12 @@ public class FlyService implements IFlyService{
         reservaExistente.setReservaConfirmada(true);
         List<Asiento> asientos = reservaExistente.getAsientos();
 
-        for (Asiento asiento : asientos) {
-            if (asiento.getFechaExpiracion() != null){
-                asiento.setFechaExpiracion(null);
-                asientoRepository.save(asiento);
-            }
-        }
+       // for (Asiento asiento : asientos) {
+         //   if (asiento.getFechaExpiracion() != null){
+           //     asiento.setFechaExpiracion(null);
+             //   asientoRepository.save(asiento);
+           // }
+       // }
 
         reservaRepository.save(reservaExistente);
 
@@ -288,6 +309,31 @@ public class FlyService implements IFlyService{
         respUs4.setVuelosUsuarios(resultados);
         respUs4.setMensaje("Historial y Preferencias de Vuelo del Cliente "+usuarioRta.get().getNombreCompletoUsuario());
         return respUs4;
+    }
+
+    @Override
+    public RespVentasDiarias getVentasDiarias() {
+
+        List<Pago> pagos = pagoRepository.findAll();
+
+        DateFormatHelper date = new DateFormatHelper();
+
+        Double pagosDiarios = 0.0;
+        int totalpagos=0;
+        for(Pago pago :pagos){
+            if(Objects.equals(date.fechaStirng(new Date()), date.fechaStirng(pago.getFechaPago())) && pago.isPagado()){
+                pagosDiarios+=pago.getMonto();
+                totalpagos+=1;
+            }
+        }
+
+        RespVentasDiarias resp= new RespVentasDiarias();
+        resp.setTotalVentas(totalpagos);
+        resp.setIngresosGenerados(pagosDiarios);
+
+
+        return resp;
+
     }
 
 
