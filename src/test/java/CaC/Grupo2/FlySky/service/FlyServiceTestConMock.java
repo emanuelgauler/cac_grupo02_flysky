@@ -195,8 +195,8 @@ public class FlyServiceTestConMock {
     void getHistorialOKTest(){
         //ARRANGE
         //1-Creacion de los Objetos Mocks
-        long usIdConsulta = 1;
-        long usIdRespuesta = 2;
+        long usIdConsulta = 1L;
+        long usIdRespuesta = 2L;
 
         SolHistorialDto solHistorialDtoMock = new SolHistorialDto();
         solHistorialDtoMock.setUsuarioIdAgente(usIdConsulta);
@@ -205,16 +205,16 @@ public class FlyServiceTestConMock {
         Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS,"Max Power",8810);
         Usuario usRespuestaMock = new Usuario(2L,TipoUsuarioEnum.CLIENTE,"Pechugas Laru",9412);
 
-        List<Reserva> todasReservasMock = new ArrayList<>();
-        todasReservasMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
-        todasReservasMock.add(new Reserva(2L,usRespuestaMock,null, 2L,false,new Date(2023,8,2),1400,null));
-        todasReservasMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
-        todasReservasMock.add(new Reserva(4L,usConsultaMock,null, 1L,true,new Date(2023,8,4),1200,null));
+        //List<Reserva> todasReservasMock = new ArrayList<>();
+        //todasReservasMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
+        //todasReservasMock.add(new Reserva(2L,usRespuestaMock,null, 2L,false,new Date(2023,8,2),1400,null));
+        //todasReservasMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
+        //todasReservasMock.add(new Reserva(4L,usConsultaMock,null, 1L,true,new Date(2023,8,4),1200,null));
 
-        List<Reserva> todasReservasUserMock = new ArrayList<>();
-        todasReservasUserMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
-        todasReservasUserMock.add(new Reserva(2L,usRespuestaMock,null, 2L,false,new Date(2023,8,2),1400,null));
-        todasReservasUserMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
+        //List<Reserva> todasReservasUserMock = new ArrayList<>();
+        //todasReservasUserMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
+        //todasReservasUserMock.add(new Reserva(2L,usRespuestaMock,null, 2L,false,new Date(2023,8,2),1400,null));
+        //todasReservasUserMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
 
         List<Reserva> todasReservasUserTrueMock = new ArrayList<>();
         todasReservasUserTrueMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
@@ -225,9 +225,9 @@ public class FlyServiceTestConMock {
         todosVuelosMock.add(new Vuelo(2L,null,"Buenos Aires","Roma",new Date(2023,9,2),1400.5,false,"Latam"));
         todosVuelosMock.add(new Vuelo(3L,null,"Buenos Aires","Toronto",new Date(2023,9,3),1300.5,false,"AA"));
 
-        List<Vuelo> todosVuelosCliMock = new ArrayList<>();
-        todosVuelosCliMock.add(new Vuelo(1L,null,"Buenos Aires","Miami",new Date(2023,9,1),1500.5,false,"AA"));
-        todosVuelosCliMock.add(new Vuelo(2L,null,"Buenos Aires","Roma",new Date(2023,9,2),1400.5,false,"Latam"));
+        //List<Vuelo> todosVuelosCliMock = new ArrayList<>();
+        //todosVuelosCliMock.add(new Vuelo(1L,null,"Buenos Aires","Miami",new Date(2023,9,1),1500.5,false,"AA"));
+        //todosVuelosCliMock.add(new Vuelo(2L,null,"Buenos Aires","Roma",new Date(2023,9,2),1400.5,false,"Latam"));
 
         List<VueloDtoSA> vueloDtoSAMock = new ArrayList<>();
         vueloDtoSAMock.add(new VueloDtoSA("Buenos Aires","Miami","AA",new Date(2023,9,1)));
@@ -253,18 +253,113 @@ public class FlyServiceTestConMock {
 
     }
     @Test
-    @DisplayName("US4-EX1-Usr que consulta no existe en sistema")
+    @DisplayName("US4-Ex1: llega al controller un usuario de Agente que no existe en la BDD")
     public void testEx1_ThrowsNotFoundException() {
         // Arrange
-        SolHistorialDto solHistorialDto = new SolHistorialDto();
-        solHistorialDto.setUsuarioIdAgente(1L);
-        solHistorialDto.setUsuarioIdCliente(2L);
+        long usIdConsulta = 1L;
+        long usIdRespuesta = 2L;
 
-        when(usuarioRepository.findById(solHistorialDto.getUsuarioIdCliente())).thenReturn(Optional.empty());
+        SolHistorialDto solHistorialDto = new SolHistorialDto();
+        solHistorialDto.setUsuarioIdAgente(usIdConsulta);
+        solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
+
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(NotFoundException.class, () -> {
             flyService.getHistorial(solHistorialDto);
         });
+    }
+
+    @Test
+    @DisplayName("US4-Ex2: Usuario que hace la consulta no es AGENTE DE VENTAS")
+    public void testEx2_ThrowsNotFoundException() {
+        // Arrange
+        long usIdConsulta = 1L;
+        long usIdRespuesta = 2L;
+
+        SolHistorialDto solHistorialDto = new SolHistorialDto();
+        solHistorialDto.setUsuarioIdAgente(usIdConsulta);
+        solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
+
+        Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.ADMINISTRADOR,"Homero S",8810);
+
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.of(usConsultaMock));
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> {
+            flyService.getHistorial(solHistorialDto);
+        });
+    }
+
+    @Test
+    @DisplayName("US4-Ex3: llega al controller un usuario a consultar que no existe en la BDD")
+    public void testEx3_ThrowsNotFoundException() {
+        // Arrange
+        long usIdConsulta = 1L;
+        long usIdRespuesta = 2L;
+
+        SolHistorialDto solHistorialDto = new SolHistorialDto();
+        solHistorialDto.setUsuarioIdAgente(usIdConsulta);
+        solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
+
+        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> {
+            flyService.getHistorial(solHistorialDto);
+        });
+    }
+
+    @Test
+    @DisplayName("US4-Ex4: Usuario sobre quien se consulta no es CLIENTE")
+    public void testEx4_ThrowsNotFoundException() {
+        // Arrange
+        long usIdConsulta = 1L;
+        long usIdRespuesta = 2L;
+
+        SolHistorialDto solHistorialDto = new SolHistorialDto();
+        solHistorialDto.setUsuarioIdAgente(usIdConsulta);
+        solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
+
+        Usuario usConsultaMock = new Usuario(2L, TipoUsuarioEnum.ADMINISTRADOR, "Marge S", 8810);
+
+        //3-Definición del comportamiento del método Mock
+        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.of(usConsultaMock));
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> {
+            flyService.getHistorial(solHistorialDto);
+        });
+    }
+
+    @Test
+    @DisplayName("US4-Ex5: Cliente no tiene vuelos confirmados")
+    public void testEx5_ThrowsNotFoundException() {
+        // Arrange
+        long usIdConsulta = 1L;
+        long usIdRespuesta = 2L;
+
+        SolHistorialDto solHistorialDto = new SolHistorialDto();
+        solHistorialDto.setUsuarioIdAgente(usIdConsulta);
+        solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
+
+        Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS,"Max Power",8810);
+        Usuario usRespuestaMock = new Usuario(2L,TipoUsuarioEnum.CLIENTE,"Pechugas Laru",9412);
+
+        List<Reserva> todasReservasUserTrueMock = new ArrayList<>();
+        todasReservasUserTrueMock.add(new Reserva(1L,usRespuestaMock,null, 1L,false,new Date(2023,8,1),1500,null));
+        todasReservasUserTrueMock.add(new Reserva(3L,usRespuestaMock,null, 2L,false,new Date(2023,8,3),1300,null));
+
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.of(usConsultaMock));
+        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.of(usRespuestaMock));
+
+        when(reservaRepository.findByUsuario(usRespuestaMock)).thenReturn(todasReservasUserTrueMock);
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> {
+            flyService.getHistorial(solHistorialDto);
+        });
+
     }
 }
