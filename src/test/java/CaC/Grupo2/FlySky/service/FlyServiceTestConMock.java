@@ -20,6 +20,8 @@ import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,7 +38,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest
+
 public class FlyServiceTestConMock {
 
 
@@ -247,5 +251,20 @@ public class FlyServiceTestConMock {
         //5-Assert
         assertEquals(expected,result);
 
+    }
+    @Test
+    @DisplayName("US4-EX1-Usr que consulta no existe en sistema")
+    public void testEx1_ThrowsNotFoundException() {
+        // Arrange
+        SolHistorialDto solHistorialDto = new SolHistorialDto();
+        solHistorialDto.setUsuarioIdAgente(1L);
+        solHistorialDto.setUsuarioIdCliente(2L);
+
+        when(usuarioRepository.findById(solHistorialDto.getUsuarioIdCliente())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> {
+            flyService.getHistorial(solHistorialDto);
+        });
     }
 }

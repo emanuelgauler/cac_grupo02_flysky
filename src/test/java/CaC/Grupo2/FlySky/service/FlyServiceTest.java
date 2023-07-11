@@ -3,6 +3,7 @@ package CaC.Grupo2.FlySky.service;
 import CaC.Grupo2.FlySky.dto.*;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
+import CaC.Grupo2.FlySky.exception.NotFoundException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
 import CaC.Grupo2.FlySky.repository.FlyRepository;
 import CaC.Grupo2.FlySky.repository.UsuarioRepository;
@@ -305,8 +306,6 @@ public class FlyServiceTest {
         assertEquals(expected,act);
 
     }
-
-
 }
 
 

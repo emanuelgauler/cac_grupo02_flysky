@@ -255,7 +255,7 @@ public class FlyService implements IFlyService{
 
         Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdCliente());
         if (usuarioRta.isEmpty() ) {
-            throw new NotFoundException("ERROR!: El usuario por el que se quiere consultar no existe en el sistema");
+            throw new NotFoundException("ERROR!: El usuario consultado no existe en el sistema");
         }
         if(usuarioRta.get().getTipoUsuario()!=TipoUsuarioEnum.CLIENTE){
             throw new NotFoundException("ERROR!: El usuario por el que se quiere consultar no es cliente");
