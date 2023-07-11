@@ -4,9 +4,9 @@ import lombok.*;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class SolHistorialDto {
     long usuarioIdAgente;
     long usuarioIdCliente;

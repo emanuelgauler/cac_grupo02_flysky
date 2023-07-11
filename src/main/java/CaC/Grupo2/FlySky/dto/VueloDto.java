@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Data
-@EqualsAndHashCode
+//@EqualsAndHashCode
 
 public class VueloDto {
     private Long vueloID;
