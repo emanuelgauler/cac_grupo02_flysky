@@ -229,23 +229,36 @@ public class FlyService implements IFlyService{
         return "Reserva pagada exitosamente";
     }
 
+    /**
+     * Este método sirve para que un <b>agente de ventas</b> puedas acceder al historial de viajes
+     * de un confirmados (pagos) de un <b>cliente</b>
+     * <ul>
+     *   <li>El usuario quién consulta debe estar tipificado como <b>AGENTE_VENTAS</b> dentro de la tabla de usuarios.</li>
+     *   <li>El usuario sobre quién se realiza la consulta debe estar tipificado como <b>CLIENTE</b> dentro de la tabla de usuarios.</li>
+     * </ul>
+     * @param solHistorialDto (ID de usuario que consulta y ID de usuario consultado)
+     * @return Devuelve al payload los viajes que ha comprado el cliente: Origen, Destino, Aerolinea y Fecha de Vuelo.
+     * @throws NotFoundException 5: (1-2) Quien consulta o sobre quien se realiza la consulta no existen en el sistema,
+     * (3-4) Cuando los usuarios no cuentan con los permisos necesarios, y
+     * (5) cuando el usuario no ha confirmado ningún viaje al momento de la consulta.
+     */
     @Override
     public RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto){
 
         Optional<Usuario> usuarioCta = usuarioRepository.findById(solHistorialDto.getUsuarioIdAgente());
         if (usuarioCta.isEmpty() ) {
-            throw new NotFoundException("ERROR: No encuentro USUARIO en el sistema");
+            throw new NotFoundException("ERROR!: El usuario que solicita la información no existe en el sistema");
         }
         if (usuarioCta.get().getTipoUsuario()!= TipoUsuarioEnum.AGENTE_VENTAS){
-            throw new NotFoundException("ERROR: Usted no es Agente de ventas, no puede realizar la consulta");
+            throw new NotFoundException("ERROR!: Usted no es Agente de ventas, no puede realizar esta consulta");
         }
 
         Optional<Usuario> usuarioRta = usuarioRepository.findById(solHistorialDto.getUsuarioIdCliente());
         if (usuarioRta.isEmpty() ) {
-            throw new NotFoundException("ERROR: No encuentro a ese USUARIO en el sistema");
+            throw new NotFoundException("ERROR!: El usuario por el que se quiere consultar no existe en el sistema");
         }
         if(usuarioRta.get().getTipoUsuario()!=TipoUsuarioEnum.CLIENTE){
-            throw new NotFoundException("ERROR: El usuario por el que se quiere consultar no es cliente");
+            throw new NotFoundException("ERROR!: El usuario por el que se quiere consultar no es cliente");
         }
 
 
@@ -256,7 +269,7 @@ public class FlyService implements IFlyService{
 
 
         if (histReservasTrue.isEmpty() ) {
-            throw new NotFoundException("ERROR: Ese cliente no realizo ningún vuelo");
+            throw new NotFoundException("ERROR!: Al momento, este cliente no ha confirmado ningún vuelo");
         }
 
 
