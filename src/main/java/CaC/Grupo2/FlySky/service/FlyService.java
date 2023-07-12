@@ -160,7 +160,6 @@ public class FlyService implements IFlyService{
             if(haPasadoTiempoLimiteDePago(reserva) && !reserva.isReservaConfirmada()){
                 List<Asiento> asientos = reserva.getAsientos();
                 for (Asiento asiento : asientos) {
-                    //asiento.setFechaExpiracion(null);
                     asiento.setPasajero(null);
                     asiento.setOcupado(false);
                     asiento.setUbicacion(null);

@@ -1,18 +1,22 @@
 package CaC.Grupo2.FlySky.controller;
 
+import CaC.Grupo2.FlySky.dto.request.SolHistorialDto;
 import CaC.Grupo2.FlySky.dto.request.SolVentasDiariasDto;
 import CaC.Grupo2.FlySky.dto.response.ErrorDto;
 import CaC.Grupo2.FlySky.dto.request.ReservaDto;
+import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
+import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
+import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.repository.*;
 import CaC.Grupo2.FlySky.service.FlyService;
+import CaC.Grupo2.FlySky.entity.usuario.Usuario;
+import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +30,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,13 +53,7 @@ public class IntegracionTest {
     UsuarioRepository usuarioRepository;
     @Mock
     PagoRepository pagoRepository;
-    @Mock
-    ReservaRepository reservaRepository;
-    @Mock
-    FlyRepository flyRepository;
 
-    @Mock
-    AsientoRepository asientoRepository;
 
     @InjectMocks
     FlyService flyService;
@@ -161,7 +163,7 @@ public class IntegracionTest {
 
         // arrange
 
-        SolVentasDiarias solVentasDiarias = new SolVentasDiarias();
+        SolVentasDiariasDto solVentasDiarias = new SolVentasDiariasDto();
         solVentasDiarias.setUsuarioIdAdministrador(1L);
 
         Usuario usuarioAdmin = new Usuario();
@@ -201,8 +203,42 @@ public class IntegracionTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.ingresosGenerados").value(175.5))
                 .andReturn();
     }
+*/
 
-     */
+
+
+    @Test
+    void getHistorialTest() throws Exception {
+        //Valor Recibido DTO
+        SolHistorialDto solHistorialDtoI = new SolHistorialDto(2L,3L);
+
+        List<VueloDtoSA> vueloDtoSAI = new ArrayList<>();
+        vueloDtoSAI.add(new VueloDtoSA("Mendoza","Bs. As","Jestmar",new Date(123,8,9)));
+        vueloDtoSAI.add(new VueloDtoSA("Tierra del Fuego","Bs. As","AirlineZ",new Date(123,8,10)));
+
+        RtaHistorialDto expected = new RtaHistorialDto("Historial y Preferencias de Vuelo del Cliente Michael Johnson",vueloDtoSAI);
+
+        //Transformo los objetos a Json
+        ObjectWriter objToJson = new ObjectMapper()
+                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
+                .writer();
+
+        String jsonPayloadEntrada = objToJson.writeValueAsString(solHistorialDtoI);
+        String JsonPayLoadSalida = objToJson.writeValueAsString(expected);
+        //System.out.println(jsonPayloadEntrada);
+        //System.out.println(JsonPayLoadSalida);
+
+        //Act
+        MvcResult mvcResult = mockMvc.perform(get("/getHistorial")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayloadEntrada))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        //Assert
+       assertEquals(JsonPayLoadSalida,mvcResult.getResponse().getContentAsString());
+    }
 
 
 }
