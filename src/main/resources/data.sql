@@ -49,7 +49,8 @@ VALUES (1, 'John Doe',          '123456789',    0), --0 es Administrador
  VALUES (TRUE,  '2023-08-10 02:00', 3,  1,  175.50),
         (false, '2023-07-07 02:00', 3,  3,  150),
         (false, '2023-10-10 02:00', 4,  3,  150),
-        (true,  '2023-08-10 02:00', 3,  3,  150);
+        (true,  '2023-08-10 02:00', 3,  3,  150),
+        (false,  NOW(),             3,  3,  150);
 
 --cargo una los datos del asiento id 1 a la reserva id 1
 UPDATE ASIENTOS

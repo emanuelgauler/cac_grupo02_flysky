@@ -176,7 +176,7 @@ public class FlyService implements IFlyService{
         Date fechaCreacion = reserva.getFechaReserva();
         long tiempoTranscurrido = fechaActual.getTime() - fechaCreacion.getTime();
         long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
-        return minutosTranscurridos >= 1;
+        return minutosTranscurridos >= 10;
     }
 
     @Override

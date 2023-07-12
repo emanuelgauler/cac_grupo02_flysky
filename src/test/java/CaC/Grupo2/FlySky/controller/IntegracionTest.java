@@ -49,14 +49,6 @@ public class IntegracionTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Mock
-    UsuarioRepository usuarioRepository;
-    @Mock
-    PagoRepository pagoRepository;
-
-
-    @InjectMocks
-    FlyService flyService;
 
 
     @Test
@@ -225,8 +217,6 @@ public class IntegracionTest {
 
         String jsonPayloadEntrada = objToJson.writeValueAsString(solHistorialDtoI);
         String JsonPayLoadSalida = objToJson.writeValueAsString(expected);
-        //System.out.println(jsonPayloadEntrada);
-        //System.out.println(JsonPayLoadSalida);
 
         //Act
         MvcResult mvcResult = mockMvc.perform(get("/getHistorial")
