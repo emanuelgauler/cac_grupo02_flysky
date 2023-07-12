@@ -85,5 +85,5 @@ Agradecemos cualquier aporte que pueda mejorar FlySky y hacerlo aún más útil 
   - **Emanuel E. Gauler** - [emanuelgauler](https://github.com/emanuelgauler)
   - **Federico Bencini** - [FedeBencini](https://github.com/FedeBencini)
   - **Jim Gavidia** - [JIMGA8](https://github.com/JIMGA8)
-  - **Maximiliano Correa Pietrobon** - [MaxCPietro](https://github.com/MaxCPietro)
+  - **Alberto Maximiliano Correa Pietrobon** - [MaxCPietro](https://github.com/MaxCPietro)
   - **Miriam Monzon** - [Miriam-777](https://github.com/Miriam-777)
