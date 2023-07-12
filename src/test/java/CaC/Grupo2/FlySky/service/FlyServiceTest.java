@@ -119,7 +119,28 @@ public class FlyServiceTest {
         String expectedMessage = "No se encontró el asiento con el ID especificado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
+    }
 
+    @Test
+    @DisplayName("validar reserva un asiento perteneciente a otro Vuelo")
+    public void testValidarReserbaUnAsientoDeOtroVuelo() {
+        // Arrange
+        List<AsientoDto> asientos = new ArrayList<>();
+        asientos.add(new AsientoDto(27L, "1V", "JIMGAVIDIA", true, "Ventana"));
+
+        reservaDto.setUsuarioID(4L);
+        reservaDto.setVueloID(1L);
+        reservaDto.setAsientos(asientos);
+
+        //act and assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            flyService.reservarVuelo(reservaDto);
+        });
+
+        // Assert
+        String expectedMessage = "el asiento que intenta reservar no pertenece a este Vuelo";
+        String actualMessage = exception.getMessage();
+        Assertions.assertEquals(expectedMessage, actualMessage);
 
     }
 
@@ -162,7 +183,7 @@ public class FlyServiceTest {
         });
 
         // Assert
-        String expectedMessage = "el asiento ya se encuentra ocupado";
+        String expectedMessage = "el asiento que intenta reservar ya se encuentra ocupado";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }

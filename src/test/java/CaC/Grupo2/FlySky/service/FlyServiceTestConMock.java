@@ -158,7 +158,9 @@ public class FlyServiceTestConMock {
         asientoExistente.setAsientoID(1L);
         asientoExistente.setOcupado(false);
         asientoExistente.setUbicacion("Ventana");
+        asientoExistente.setVuelo(vueloExistente);
         asientosReservados.add(asientoExistente);
+
 
         Reserva persistReserva = new Reserva();
         persistReserva.setReservaID(1L);

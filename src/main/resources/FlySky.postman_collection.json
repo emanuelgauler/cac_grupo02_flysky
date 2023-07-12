@@ -61,7 +61,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"reservaID\": 5,\r\n    \"tipoPago\":\"efectivo\",\r\n    \"monto\":600.5\r\n}",
+					"raw": "{\r\n    \"reservaID\": 6,\r\n    \"tipoPago\":\"efectivo\",\r\n    \"monto\":600.5\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

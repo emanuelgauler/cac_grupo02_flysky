@@ -42,7 +42,7 @@ public class FlyController {
     }
 
 
-//User_Story_4
+    //User_Story_4
     /* Como agente de ventas, quiero poder acceder al historial de reservas y preferencias de viaje
     de un cliente, para ofrecerle un servicio personalizado y promociones relevantes */
     @GetMapping("/getHistorial")
@@ -50,13 +50,10 @@ public class FlyController {
         return new ResponseEntity<>(flyService.getHistorial(solHistorialDto), HttpStatus.OK);
     }
 
+    //User_Story_5
     @GetMapping("/getVentasDiarias")
     public ResponseEntity<?> getVentasDiarias(@RequestBody SolVentasDiariasDto solVentasDiarias) {
         return new ResponseEntity<>(flyService.getVentasDiarias(solVentasDiarias), HttpStatus.OK);
     }
-
-
-
-
 
 }

@@ -99,14 +99,19 @@ public class FlyService implements IFlyService{
         }
 
         List<Asiento> asientosReservados = new ArrayList<>();
-
         for (AsientoDto asientoDto : reservaDto.getAsientos()) {
             Asiento asientoExistente = asientoRepository.findById(asientoDto.getAsientoID())
                     .orElseThrow(() -> new IllegalArgumentException("No se encontró el asiento con el ID especificado"));
 
-            if(asientoExistente.isOcupado()){
-                throw new IllegalArgumentException("el asiento ya se encuentra ocupado");
+            Vuelo  vuelo=asientoExistente.getVuelo();
+            if(!Objects.equals(vuelo.getVueloID(), reservaDto.getVueloID())){
+                throw new IllegalArgumentException("el asiento que intenta reservar no pertenece a este Vuelo");
             }
+
+            if(asientoExistente.isOcupado()){
+                throw new IllegalArgumentException("el asiento que intenta reservar ya se encuentra ocupado");
+            }
+
             asientoExistente.setPasajero(asientoDto.getPasajero());
             asientoExistente.setOcupado(true);
             asientoExistente.setUbicacion(asientoDto.getUbicacion());
