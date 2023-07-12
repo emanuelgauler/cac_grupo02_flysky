@@ -1,5 +1,6 @@
 package CaC.Grupo2.FlySky.controller;
 
+import CaC.Grupo2.FlySky.dto.request.PagoDto;
 import CaC.Grupo2.FlySky.dto.request.SolHistorialDto;
 import CaC.Grupo2.FlySky.dto.request.SolVentasDiariasDto;
 import CaC.Grupo2.FlySky.dto.response.ErrorDto;
@@ -7,6 +8,7 @@ import CaC.Grupo2.FlySky.dto.request.ReservaDto;
 import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
 import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
+import CaC.Grupo2.FlySky.entity.Pago.TipoPago;
 import CaC.Grupo2.FlySky.repository.*;
 import CaC.Grupo2.FlySky.service.FlyService;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
@@ -123,9 +125,27 @@ public class IntegracionTest {
     }
 
     @Test
-    void testPagarReserva(){
+    void testPagarReserva() throws Exception{
+        PagoDto pagoDtoIn = new PagoDto(5, TipoPago.efectivo,150);
+        String rta = "Reserva pagada exitosamente";
 
+        //Transformo los objetos a Json
+        ObjectWriter objToJson = new ObjectMapper()
+                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
+                .writer();
 
+        String jsonPayloadEntrada = objToJson.writeValueAsString(pagoDtoIn);
+
+        //Act
+        MvcResult mvcResult = mockMvc.perform(post("/pagarReserva")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayloadEntrada))
+                .andDo(print())
+                .andExpect(content().contentType("text/plain;charset=UTF-8"))
+                .andReturn();
+
+        //Assert
+        assertEquals(rta,mvcResult.getResponse().getContentAsString());
     }
 
     @Test
