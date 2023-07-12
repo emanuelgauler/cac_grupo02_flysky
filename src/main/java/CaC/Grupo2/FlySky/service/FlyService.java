@@ -44,7 +44,7 @@ public class FlyService implements IFlyService{
     }
 
     @Override
-    public List<ErrorDto.VueloDto> buscarTodosVuelos() {
+    public List<VueloDto> buscarTodosVuelos() {
         ModelMapper mapper = new ModelMapper();
 
         List<Vuelo> vuelosEnt = flyRepository.findAll();
@@ -64,8 +64,8 @@ public class FlyService implements IFlyService{
 
         }
 
-        List<ErrorDto.VueloDto> vuelosDto = new ArrayList<>();
-        vuelos.forEach(c-> vuelosDto.add(mapper.map(c, ErrorDto.VueloDto.class)));
+        List<VueloDto> vuelosDto = new ArrayList<>();
+        vuelos.forEach(c-> vuelosDto.add(mapper.map(c, VueloDto.class)));
 
         return vuelosDto;
     }

@@ -110,7 +110,7 @@ public class FlyServiceTestConMock {
         when(flyRepository.findAll()).thenReturn(vuelosEnt);
 
         // Act
-        List<ErrorDto.VueloDto> result = flyService.buscarTodosVuelos();
+        List<VueloDto> result = flyService.buscarTodosVuelos();
 
         // Assertions
         assertFalse(result.isEmpty());
