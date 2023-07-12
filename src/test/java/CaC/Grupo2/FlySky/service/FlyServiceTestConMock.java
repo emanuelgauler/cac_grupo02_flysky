@@ -303,6 +303,9 @@ public class FlyServiceTestConMock {
         solHistorialDto.setUsuarioIdAgente(usIdConsulta);
         solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
 
+        Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS, "Sole", 8810);
+
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.of(usConsultaMock));
         when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -322,10 +325,12 @@ public class FlyServiceTestConMock {
         solHistorialDto.setUsuarioIdAgente(usIdConsulta);
         solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
 
-        Usuario usConsultaMock = new Usuario(2L, TipoUsuarioEnum.ADMINISTRADOR, "Marge S", 8810);
+        Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS, "Sole", 8810);
+        Usuario usRespuestaMock = new Usuario(2L, TipoUsuarioEnum.ADMINISTRADOR,"Diego",8810);
 
         //3-Definición del comportamiento del método Mock
-        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.of(usConsultaMock));
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.of(usConsultaMock));
+        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.of(usRespuestaMock));
 
         // Act & Assert
         assertThrows(NotFoundException.class, () -> {
