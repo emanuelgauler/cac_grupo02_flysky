@@ -1,6 +1,8 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.*;
+import CaC.Grupo2.FlySky.dto.request.*;
+import CaC.Grupo2.FlySky.dto.response.RespReservaDto;
+import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
 
 
 import java.text.ParseException;
@@ -16,5 +18,5 @@ public interface IFlyService {
 
     RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto);
 
-    Object getVentasDiarias();
+    Object getVentasDiarias(SolVentasDiarias solVentasDiarias);
 }

@@ -1,4 +1,4 @@
-package CaC.Grupo2.FlySky.dto;
+package CaC.Grupo2.FlySky.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;

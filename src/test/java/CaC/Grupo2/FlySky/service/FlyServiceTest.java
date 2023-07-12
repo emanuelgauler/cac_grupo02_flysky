@@ -1,8 +1,13 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.*;
+import CaC.Grupo2.FlySky.dto.request.AsientoDto;
+import CaC.Grupo2.FlySky.dto.request.PagoDto;
+import CaC.Grupo2.FlySky.dto.request.ReservaDto;
+import CaC.Grupo2.FlySky.dto.request.SolVentasDiarias;
 import CaC.Grupo2.FlySky.entity.Reserva;
+import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
+import CaC.Grupo2.FlySky.exception.NotFoundException;
 import CaC.Grupo2.FlySky.repository.AsientoRepository;
 import CaC.Grupo2.FlySky.repository.FlyRepository;
 import CaC.Grupo2.FlySky.repository.UsuarioRepository;
@@ -17,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static CaC.Grupo2.FlySky.entity.Pago.TipoPago.efectivo;
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -26,12 +32,6 @@ public class FlyServiceTest {
     @Autowired
     IFlyService flyService;
 
-    @Autowired
-    FlyRepository flyRepository;
-    @Autowired
-    UsuarioRepository usuarioRepository;
-    @Autowired
-    AsientoRepository asientoRepository;
 
     ReservaDto reservaDto = new ReservaDto();
 
@@ -41,7 +41,7 @@ public class FlyServiceTest {
         reservaDto.setUsuarioID(500l);
 
         //act and Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(NotFoundException.class, () -> {
             flyService.reservarVuelo(reservaDto);
         });
 
@@ -109,10 +109,10 @@ public class FlyServiceTest {
 
 
         List<AsientoDto> asientos = new ArrayList<>();
-        asientos.add(new AsientoDto(4000l, "1V", "JIMGAVIDIA", true, "Ventana"));
+        asientos.add(new AsientoDto(4000L, "1V", "JIMGAVIDIA", true, "Ventana"));
 
         reservaDto.setUsuarioID(4L);
-        reservaDto.setVueloID(1l);
+        reservaDto.setVueloID(1L);
         reservaDto.setAsientos(asientos);
 
         //act and assert
@@ -303,7 +303,59 @@ public class FlyServiceTest {
         String expected="Reserva pagada exitosamente";
         //assert
         assertEquals(expected,act);
+    }
 
+    @Test
+    @DisplayName("validar usuario NO existente AL Consultar Ventas Diarias")
+    public void testValidarUsuarioNoExistenteALConsultarVentasDiarias() {
+        // Arrange
+        SolVentasDiarias solventasDiarias = new SolVentasDiarias();
+        solventasDiarias.setUsuarioIdAdministrador(1000L); //este usuario no existe
+
+        // Act
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
+            flyService.getVentasDiarias(solventasDiarias);
+        });
+
+        String expected="El usuario no existe";
+        //assert
+        String actualMessage = exception.getMessage();
+        assertEquals(expected,actualMessage);
+    }
+
+    @Test
+    @DisplayName("validar usuario NO administrador al consultar ventas diarias")
+    public void testValidarUsuarioNoAdmin() {
+        // Arrange
+        //Verificacion usuario CLiente
+        // Arrange
+        SolVentasDiarias solventasDiarias = new SolVentasDiarias();
+        solventasDiarias.setUsuarioIdAdministrador(5L); //este usuario es tipo cliente en la BBDD
+
+        // Act
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            flyService.getVentasDiarias(solventasDiarias);
+        });
+
+        String expected="Usted no es ADMINISTRADOR, no puede realizar la consulta";
+        //assert
+        String actualMessage = exception.getMessage();
+        assertEquals(expected,actualMessage);
+
+        //Verificacion usuario Admin
+        // Arrange
+        SolVentasDiarias solventasDiarias2 = new SolVentasDiarias();
+        solventasDiarias2.setUsuarioIdAdministrador(2L); //este usuario es tipo Admin en la BBDD
+
+        // Act
+        Exception exception2 = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            flyService.getVentasDiarias(solventasDiarias2);
+        });
+
+        String expected2="Usted no es ADMINISTRADOR, no puede realizar la consulta";
+        //assert
+        String actualMessage2 = exception2.getMessage();
+        assertEquals(expected2,actualMessage2);
     }
 
 

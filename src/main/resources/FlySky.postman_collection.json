@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "08f3a581-c350-4860-a362-4a233d8ee50a",
+		"name": "Fly Sky",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22721863",
+		"_collection_link": "https://lively-crescent-891896.postman.co/workspace/Workspace-Intel~81604ce1-1678-40ee-8dd1-67b3409ed603/collection/22721863-08f3a581-c350-4860-a362-4a233d8ee50a?action=share&creator=22721863&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "getAllVuelos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/getAllVuelos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"getAllVuelos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reserva Vuelo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuarioID\": 3,\r\n    \"vueloID\":4,\r\n    \"asientos\": \r\n        [\r\n            {\r\n            \"asientoID\": 27,\r\n            \"pasajero\": \"jim\",\r\n            \"ubicacion\": \"ventana\"\r\n            },\r\n            {\r\n            \"asientoID\": 28,\r\n            \"pasajero\": \"pedro\",\r\n            \"ubicacion\": \"pasillo\"\r\n            }\r\n        ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/reservaVuelo",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"reservaVuelo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pagar Reserva",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reservaID\": 5,\r\n    \"tipoPago\":\"efectivo\",\r\n    \"monto\":600.5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pagarReserva",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pagarReserva"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getHistorialUsuario",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuarioIdAgente\":2,\r\n    \"usuarioIdCliente\":3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/getHistorial",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"getHistorial"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getVentasDiarias",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuarioIdAdministrador\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/getVentasDiarias",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"getVentasDiarias"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

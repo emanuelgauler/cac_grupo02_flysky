@@ -1,15 +1,11 @@
-package CaC.Grupo2.FlySky.dto;
+package CaC.Grupo2.FlySky.dto.request;
 
-import CaC.Grupo2.FlySky.entity.Asiento;
-import CaC.Grupo2.FlySky.entity.Reserva;
+import CaC.Grupo2.FlySky.dto.request.AsientoDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
 @Getter

@@ -1,6 +1,10 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.*;
+import CaC.Grupo2.FlySky.dto.request.*;
+import CaC.Grupo2.FlySky.dto.response.RespReservaDto;
+import CaC.Grupo2.FlySky.dto.response.RespVentasDiarias;
+import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
+import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
@@ -15,15 +19,12 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
-
-
 import CaC.Grupo2.FlySky.helperDate.DateFormatHelper;
 
 
@@ -87,7 +88,7 @@ public class FlyService implements IFlyService{
         ModelMapper modelMapper = new ModelMapper();
 
         Usuario usuario = usuarioRepository.findById(reservaDto.getUsuarioID())
-                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
+                .orElseThrow(() -> new NotFoundException("El usuario no existe"));
 
         if(usuario.getTipoUsuario() !=CLIENTE ){
             throw new IllegalArgumentException("Por favor Registrese para reservar un vuelo");
@@ -109,7 +110,6 @@ public class FlyService implements IFlyService{
             if(asientoExistente.isOcupado()){
                 throw new IllegalArgumentException("el asiento ya se encuentra ocupado");
             }
-            //setFechaExpiracionAsiento(asientoExistente,10);
             asientoExistente.setPasajero(asientoDto.getPasajero());
             asientoExistente.setOcupado(true);
             asientoExistente.setUbicacion(asientoDto.getUbicacion());
@@ -154,15 +154,7 @@ public class FlyService implements IFlyService{
 
     }
 
-    public void setFechaExpiracionAsiento(Asiento asiento, int duracionReservaEnMin) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MINUTE, duracionReservaEnMin); // Duración de la reserva en minutos
-        Date fechaExpiracion = calendar.getTime();
-        //asiento.setFechaExpiracion(fechaExpiracion);
-    }
-
-    // Tarea programada para liberar las reservas expirados /no pagadas
+    // Tarea programada para liberar las reservas expirados no pagadas
     @Scheduled(fixedDelay = 10000) //600000 cada 10 minutos
     public void liberarReservasExpiradas() {
         List<Reserva> reservas =reservaRepository.findAll();
@@ -180,22 +172,8 @@ public class FlyService implements IFlyService{
             }
 
         }
-        /*
-        List<Asiento> asientos = asientoRepository.findAll();
-        Date fechaActual = new Date();
 
-        for (Asiento asiento : asientos) {
-            if (asiento.getFechaExpiracion() != null && asiento.getFechaExpiracion().before(fechaActual)) {
-                asiento.setFechaExpiracion(null);
-                asiento.setPasajero(null);
-                asiento.setOcupado(false);
-                asiento.setUbicacion(null);
-                asientoRepository.save(asiento);
-            }
-
-         */
     }
-
 
     public boolean haPasadoTiempoLimiteDePago(Reserva reserva) {
         Date fechaActual = new Date();
@@ -204,6 +182,7 @@ public class FlyService implements IFlyService{
         long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
         return minutosTranscurridos >= 1;
     }
+
     @Override
     public String pagarReserva(PagoDto pagoDto) {
         Date fechaActual = new Date();
@@ -223,10 +202,7 @@ public class FlyService implements IFlyService{
             throw new IllegalArgumentException("No ingreso el monto correcto");
         }
 
-        //Falta Validar Tipo de Pago!!!
-
         Pago pago = new Pago();
-
         pago.setPagado(true);
         pago.setTipoPago(pagoDto.getTipoPago());
         pago.setFechaPago(fechaActual);
@@ -236,15 +212,6 @@ public class FlyService implements IFlyService{
         Pago persistPago = pagoRepository.save(pago);
 
         reservaExistente.setReservaConfirmada(true);
-        List<Asiento> asientos = reservaExistente.getAsientos();
-
-       // for (Asiento asiento : asientos) {
-         //   if (asiento.getFechaExpiracion() != null){
-           //     asiento.setFechaExpiracion(null);
-             //   asientoRepository.save(asiento);
-           // }
-       // }
-
         reservaRepository.save(reservaExistente);
 
         return "Reserva pagada exitosamente";
@@ -312,24 +279,32 @@ public class FlyService implements IFlyService{
     }
 
     @Override
-    public RespVentasDiarias getVentasDiarias() {
+    public RespVentasDiarias getVentasDiarias(SolVentasDiarias solVentasDiarias) {
+
+        Optional<Usuario> usuario = usuarioRepository.findById(solVentasDiarias.getUsuarioIdAdministrador());
+        if (usuario.isEmpty() ) {
+            throw new NotFoundException("El usuario no existe");
+        }
+        if (usuario.get().getTipoUsuario()!= ADMINISTRADOR){
+            throw new IllegalArgumentException("Usted no es ADMINISTRADOR, no puede realizar la consulta");
+        }
 
         List<Pago> pagos = pagoRepository.findAll();
 
         DateFormatHelper date = new DateFormatHelper();
 
-        Double pagosDiarios = 0.0;
+        double ingresosDiarios = 0.0;
         int totalpagos=0;
         for(Pago pago :pagos){
             if(Objects.equals(date.fechaStirng(new Date()), date.fechaStirng(pago.getFechaPago())) && pago.isPagado()){
-                pagosDiarios+=pago.getMonto();
+                ingresosDiarios+=pago.getMonto();
                 totalpagos+=1;
             }
         }
 
         RespVentasDiarias resp= new RespVentasDiarias();
         resp.setTotalVentas(totalpagos);
-        resp.setIngresosGenerados(pagosDiarios);
+        resp.setIngresosGenerados(ingresosDiarios);
 
 
         return resp;
