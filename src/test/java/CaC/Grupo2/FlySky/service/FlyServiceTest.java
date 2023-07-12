@@ -357,8 +357,6 @@ public class FlyServiceTest {
         String actualMessage2 = exception2.getMessage();
         assertEquals(expected2,actualMessage2);
     }
-
-
 }
 
 
