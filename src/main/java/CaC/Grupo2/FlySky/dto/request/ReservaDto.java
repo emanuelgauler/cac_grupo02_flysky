@@ -1,5 +1,6 @@
-package CaC.Grupo2.FlySky.dto;
+package CaC.Grupo2.FlySky.dto.request;
 
+import CaC.Grupo2.FlySky.dto.request.AsientoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

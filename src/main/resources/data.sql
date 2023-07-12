@@ -39,17 +39,18 @@ VALUES ('1V', 'true','001'),
        ('1P', 'false','004');
 
 INSERT INTO usuarios (USUARIOID, NOMBRE_COMPLETO_USUARIO, TELEFONO, TIPO_USUARIO)
-VALUES (1, 'John Doe', '123456789', 0),
-       (2, 'Jane Smith', '987654321', 1),
-       (3, 'Michael Johnson', '555555555', 2),
-       (4, 'Jim Gavidia', '37573255', 2),
-       (5, 'Maria Fernandez', '51515548', 2);
+VALUES (1, 'John Doe',          '123456789',    0), --0 es Administrador
+       (2, 'Jane Smith',        '987654321',    1), -- 1 es Admin
+       (3, 'Michael Johnson',   '555555555',   2), -- 2 es Cliente
+       (4, 'Jim Gavidia',       '37573255',    2),
+       (5, 'Maria Fernandez',   '51515548',    2);
 
  INSERT INTO reservas (Reserva_Confirmada, Fecha_Reserva, UsuarioID,VueloID,monto)
- VALUES (TRUE,'2023-08-10 02:00',3,1,100),
-        (false,'2023-07-07 02:00',3,3,150),
-        (false,'2023-10-10 02:00',4,3,150),
-        (true,'2023-08-10 02:00',3,3,150);
+ VALUES (TRUE,  '2023-08-10 02:00', 3,  1,  175.50),
+        (false, '2023-07-07 02:00', 3,  3,  150),
+        (false, '2023-10-10 02:00', 4,  3,  150),
+        (true,  '2023-08-10 02:00', 3,  3,  150),
+        (false,  NOW(),             3,  3,  150);
 
 --cargo una los datos del asiento id 1 a la reserva id 1
 UPDATE ASIENTOS
@@ -58,13 +59,19 @@ WHERE ASIENTOID = 1;
 
 --cargo una los datos del asiento id 16 a la reserva id 3
 UPDATE ASIENTOS
-SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 3, PASAJERO = 'Jim Gavidia', UBICACION = 'pasillo', FECHA_EXPIRACION ='2023-10-10 11:04:35.162'
+SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 3, PASAJERO = 'Jim Gavidia', UBICACION = 'pasillo'
 WHERE ASIENTOID = 16;
 
 --cargo una los datos del asiento id 15 a la reserva id 4
 UPDATE ASIENTOS
 SET OCUPADO = 'true', VUELOID = '003', RESERVA_ID = 4, PASAJERO = 'Max', UBICACION = 'ventana'
 WHERE ASIENTOID = 15;
+
+--cargamos un pago para validar las ventas Diarias
+ INSERT INTO Pagos (Fecha_Pago,monto, pagado, TIPO_PAGO, RESERVA_ID  )
+ VALUES (NOW(), 175.50, true,  1,  1);
+
+
 
 
 

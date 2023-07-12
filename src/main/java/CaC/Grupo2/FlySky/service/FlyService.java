@@ -1,6 +1,7 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.*;
+import CaC.Grupo2.FlySky.dto.request.*;
+import CaC.Grupo2.FlySky.dto.response.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
@@ -15,13 +16,14 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
+import CaC.Grupo2.FlySky.helperDate.DateFormatHelper;
+
 
 @Service
 @Component
@@ -63,7 +65,7 @@ public class FlyService implements IFlyService{
         }
 
         List<VueloDto> vuelosDto = new ArrayList<>();
-        vuelos.forEach(c-> vuelosDto.add(mapper.map(c,VueloDto.class)));
+        vuelos.forEach(c-> vuelosDto.add(mapper.map(c, VueloDto.class)));
 
         return vuelosDto;
     }
@@ -83,7 +85,7 @@ public class FlyService implements IFlyService{
         ModelMapper modelMapper = new ModelMapper();
 
         Usuario usuario = usuarioRepository.findById(reservaDto.getUsuarioID())
-                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
+                .orElseThrow(() -> new NotFoundException("El usuario no existe"));
 
         if(usuario.getTipoUsuario() !=CLIENTE ){
             throw new IllegalArgumentException("Por favor Registrese para reservar un vuelo");
@@ -97,15 +99,19 @@ public class FlyService implements IFlyService{
         }
 
         List<Asiento> asientosReservados = new ArrayList<>();
-
         for (AsientoDto asientoDto : reservaDto.getAsientos()) {
             Asiento asientoExistente = asientoRepository.findById(asientoDto.getAsientoID())
                     .orElseThrow(() -> new IllegalArgumentException("No se encontró el asiento con el ID especificado"));
 
-            if(asientoExistente.isOcupado()){
-                throw new IllegalArgumentException("el asiento ya se encuentra ocupado");
+            Vuelo  vuelo=asientoExistente.getVuelo();
+            if(!Objects.equals(vuelo.getVueloID(), reservaDto.getVueloID())){
+                throw new IllegalArgumentException("el asiento que intenta reservar no pertenece a este Vuelo");
             }
-            setFechaExpiracionAsiento(asientoExistente,10);
+
+            if(asientoExistente.isOcupado()){
+                throw new IllegalArgumentException("el asiento que intenta reservar ya se encuentra ocupado");
+            }
+
             asientoExistente.setPasajero(asientoDto.getPasajero());
             asientoExistente.setOcupado(true);
             asientoExistente.setUbicacion(asientoDto.getUbicacion());
@@ -150,31 +156,25 @@ public class FlyService implements IFlyService{
 
     }
 
-    public void setFechaExpiracionAsiento(Asiento asiento, int duracionReservaEnMin) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MINUTE, duracionReservaEnMin); // Duración de la reserva en minutos
-        Date fechaExpiracion = calendar.getTime();
-        asiento.setFechaExpiracion(fechaExpiracion);
-    }
-
-    // Tarea programada para liberar los asientos expirados
+    // Tarea programada para liberar las reservas expirados no pagadas
     @Scheduled(fixedDelay = 10000) //600000 cada 10 minutos
-    public void liberarAsientosExpirados() {
-        List<Asiento> asientos = asientoRepository.findAll();
-        Date fechaActual = new Date();
+    public void liberarReservasExpiradas() {
+        List<Reserva> reservas =reservaRepository.findAll();
 
-        for (Asiento asiento : asientos) {
-            if (asiento.getFechaExpiracion() != null && asiento.getFechaExpiracion().before(fechaActual)) {
-                asiento.setFechaExpiracion(null);
-                asiento.setPasajero(null);
-                asiento.setOcupado(false);
-                asiento.setUbicacion(null);
-                asientoRepository.save(asiento);
+        for(Reserva reserva: reservas){
+            if(haPasadoTiempoLimiteDePago(reserva) && !reserva.isReservaConfirmada()){
+                List<Asiento> asientos = reserva.getAsientos();
+                for (Asiento asiento : asientos) {
+                    asiento.setPasajero(null);
+                    asiento.setOcupado(false);
+                    asiento.setUbicacion(null);
+                    asientoRepository.save(asiento);
+                }
             }
-        }
-    }
 
+        }
+
+    }
 
     public boolean haPasadoTiempoLimiteDePago(Reserva reserva) {
         Date fechaActual = new Date();
@@ -183,12 +183,13 @@ public class FlyService implements IFlyService{
         long minutosTranscurridos = TimeUnit.MINUTES.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
         return minutosTranscurridos >= 10;
     }
+
     @Override
     public String pagarReserva(PagoDto pagoDto) {
         Date fechaActual = new Date();
 
         Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
-                .orElseThrow(() -> new IllegalArgumentException("No se encontro la reserva con el ID especificado"));
+                .orElseThrow(() -> new NotFoundException("No se encontro la reserva con el ID especificado"));
 
         if(reservaExistente.isReservaConfirmada()){
            throw new IllegalArgumentException("ya se realizo el pago de esta reserva");
@@ -202,10 +203,7 @@ public class FlyService implements IFlyService{
             throw new IllegalArgumentException("No ingreso el monto correcto");
         }
 
-        //Falta Validar Tipo de Pago!!!
-
         Pago pago = new Pago();
-
         pago.setPagado(true);
         pago.setTipoPago(pagoDto.getTipoPago());
         pago.setFechaPago(fechaActual);
@@ -215,33 +213,11 @@ public class FlyService implements IFlyService{
         Pago persistPago = pagoRepository.save(pago);
 
         reservaExistente.setReservaConfirmada(true);
-        List<Asiento> asientos = reservaExistente.getAsientos();
-
-        for (Asiento asiento : asientos) {
-            if (asiento.getFechaExpiracion() != null){
-                asiento.setFechaExpiracion(null);
-                asientoRepository.save(asiento);
-            }
-        }
-
         reservaRepository.save(reservaExistente);
 
         return "Reserva pagada exitosamente";
     }
 
-    /**
-     * Este método sirve para que un <b>agente de ventas</b> puedas acceder al historial de viajes
-     * de un confirmados (pagos) de un <b>cliente</b>
-     * <ul>
-     *   <li>El usuario quién consulta debe estar tipificado como <b>AGENTE_VENTAS</b> dentro de la tabla de usuarios.</li>
-     *   <li>El usuario sobre quién se realiza la consulta debe estar tipificado como <b>CLIENTE</b> dentro de la tabla de usuarios.</li>
-     * </ul>
-     * @param solHistorialDto (ID de usuario que consulta y ID de usuario consultado)
-     * @return Devuelve al payload los viajes que ha comprado el cliente: Origen, Destino, Aerolinea y Fecha de Vuelo.
-     * @throws NotFoundException 5: (1-2) Quien consulta o sobre quien se realiza la consulta no existen en el sistema,
-     * (3-4) Cuando los usuarios no cuentan con los permisos necesarios, y
-     * (5) cuando el usuario no ha confirmado ningún viaje al momento de la consulta.
-     */
     @Override
     public RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto){
 
@@ -301,6 +277,39 @@ public class FlyService implements IFlyService{
         respUs4.setVuelosUsuarios(resultados);
         respUs4.setMensaje("Historial y Preferencias de Vuelo del Cliente "+usuarioRta.get().getNombreCompletoUsuario());
         return respUs4;
+    }
+
+    @Override
+    public RespVentasDiarias getVentasDiarias(SolVentasDiariasDto solVentasDiarias) {
+
+        Optional<Usuario> usuario = usuarioRepository.findById(solVentasDiarias.getUsuarioIdAdministrador());
+        if (usuario.isEmpty() ) {
+            throw new NotFoundException("El usuario no existe");
+        }
+        if (usuario.get().getTipoUsuario()!= ADMINISTRADOR){
+            throw new IllegalArgumentException("Usted no es ADMINISTRADOR, no puede realizar la consulta");
+        }
+
+        List<Pago> pagos = pagoRepository.findAll();
+
+        DateFormatHelper date = new DateFormatHelper();
+
+        double ingresosDiarios = 0.0;
+        int totalpagos=0;
+        for(Pago pago :pagos){
+            if(Objects.equals(date.fechaStirng(new Date()), date.fechaStirng(pago.getFechaPago())) && pago.isPagado()){
+                ingresosDiarios+=pago.getMonto();
+                totalpagos+=1;
+            }
+        }
+
+        RespVentasDiarias resp= new RespVentasDiarias();
+        resp.setTotalVentas(totalpagos);
+        resp.setIngresosGenerados(ingresosDiarios);
+
+
+        return resp;
+
     }
 
 

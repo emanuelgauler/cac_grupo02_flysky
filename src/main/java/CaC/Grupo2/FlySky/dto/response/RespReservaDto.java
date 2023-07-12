@@ -1,6 +1,6 @@
-package CaC.Grupo2.FlySky.dto;
+package CaC.Grupo2.FlySky.dto.response;
 
-import CaC.Grupo2.FlySky.entity.Reserva;
+import CaC.Grupo2.FlySky.dto.request.ReservaDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

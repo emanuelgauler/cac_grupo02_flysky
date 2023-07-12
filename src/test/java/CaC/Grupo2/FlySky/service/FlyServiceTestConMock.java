@@ -1,22 +1,15 @@
 package CaC.Grupo2.FlySky.service;
 
-import CaC.Grupo2.FlySky.dto.AsientoDto;
-import CaC.Grupo2.FlySky.dto.ReservaDto;
-import CaC.Grupo2.FlySky.dto.RespReservaDto;
-import CaC.Grupo2.FlySky.dto.VueloDto;
+import CaC.Grupo2.FlySky.dto.request.*;
+import CaC.Grupo2.FlySky.dto.response.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
+import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.entity.Vuelo;
-import CaC.Grupo2.FlySky.dto.RtaHistorialDto;
-import CaC.Grupo2.FlySky.dto.SolHistorialDto;
-import CaC.Grupo2.FlySky.dto.VueloDtoSA;
 import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
-import CaC.Grupo2.FlySky.repository.AsientoRepository;
-import CaC.Grupo2.FlySky.repository.FlyRepository;
-import CaC.Grupo2.FlySky.repository.ReservaRepository;
-import CaC.Grupo2.FlySky.repository.UsuarioRepository;
+import CaC.Grupo2.FlySky.repository.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -26,13 +19,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Optional;
-
+import static CaC.Grupo2.FlySky.entity.Pago.TipoPago.tarjeta_debito;
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -51,6 +44,9 @@ public class FlyServiceTestConMock {
 
     @Mock
     UsuarioRepository usuarioRepository;
+    @Mock
+    PagoRepository pagoRepository;
+
     @Mock
     AsientoRepository asientoRepository;
     @InjectMocks
@@ -162,7 +158,9 @@ public class FlyServiceTestConMock {
         asientoExistente.setAsientoID(1L);
         asientoExistente.setOcupado(false);
         asientoExistente.setUbicacion("Ventana");
+        asientoExistente.setVuelo(vueloExistente);
         asientosReservados.add(asientoExistente);
+
 
         Reserva persistReserva = new Reserva();
         persistReserva.setReservaID(1L);
@@ -205,17 +203,6 @@ public class FlyServiceTestConMock {
         Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS,"Max Power",8810);
         Usuario usRespuestaMock = new Usuario(2L,TipoUsuarioEnum.CLIENTE,"Pechugas Laru",9412);
 
-        //List<Reserva> todasReservasMock = new ArrayList<>();
-        //todasReservasMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
-        //todasReservasMock.add(new Reserva(2L,usRespuestaMock,null, 2L,false,new Date(2023,8,2),1400,null));
-        //todasReservasMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
-        //todasReservasMock.add(new Reserva(4L,usConsultaMock,null, 1L,true,new Date(2023,8,4),1200,null));
-
-        //List<Reserva> todasReservasUserMock = new ArrayList<>();
-        //todasReservasUserMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
-        //todasReservasUserMock.add(new Reserva(2L,usRespuestaMock,null, 2L,false,new Date(2023,8,2),1400,null));
-        //todasReservasUserMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
-
         List<Reserva> todasReservasUserTrueMock = new ArrayList<>();
         todasReservasUserTrueMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
         todasReservasUserTrueMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
@@ -224,10 +211,6 @@ public class FlyServiceTestConMock {
         todosVuelosMock.add(new Vuelo(1L,null,"Buenos Aires","Miami",new Date(2023,9,1),1500.5,false,"AA"));
         todosVuelosMock.add(new Vuelo(2L,null,"Buenos Aires","Roma",new Date(2023,9,2),1400.5,false,"Latam"));
         todosVuelosMock.add(new Vuelo(3L,null,"Buenos Aires","Toronto",new Date(2023,9,3),1300.5,false,"AA"));
-
-        //List<Vuelo> todosVuelosCliMock = new ArrayList<>();
-        //todosVuelosCliMock.add(new Vuelo(1L,null,"Buenos Aires","Miami",new Date(2023,9,1),1500.5,false,"AA"));
-        //todosVuelosCliMock.add(new Vuelo(2L,null,"Buenos Aires","Roma",new Date(2023,9,2),1400.5,false,"Latam"));
 
         List<VueloDtoSA> vueloDtoSAMock = new ArrayList<>();
         vueloDtoSAMock.add(new VueloDtoSA("Buenos Aires","Miami","AA",new Date(2023,9,1)));
@@ -252,6 +235,85 @@ public class FlyServiceTestConMock {
         assertEquals(expected,result);
 
     }
+
+    @Test
+    @DisplayName("validar Ventas Diarias")
+    void validarConsultaVentaDiarias(){
+
+        // arrange
+        Calendar calendar = Calendar.getInstance();
+        // agregamos 30 minutos a la fecha actual
+        calendar.add(Calendar.MINUTE, 30); //agregamos 30 minutos
+        // Obtener la nueva fecha
+        Date FechaActualcon30MinMas = calendar.getTime();
+
+        ReservaDto reservaDto = new ReservaDto();
+        reservaDto.setUsuarioID(1L);
+        reservaDto.setVueloID(1L);
+
+        Usuario usuario = new Usuario();
+        usuario.setUsuarioID(1L);
+        usuario.setTipoUsuario(CLIENTE);
+
+        Vuelo vueloExistente = new Vuelo();
+        vueloExistente.setVueloID(1L);
+        vueloExistente.setFecha(FechaActualcon30MinMas);
+        vueloExistente.setPrecio(100.0);
+
+        AsientoDto asientoDto = new AsientoDto();
+        asientoDto.setAsientoID(1L);
+        asientoDto.setPasajero("Jim Gavidia");
+        asientoDto.setUbicacion("Ventana");
+
+        List<AsientoDto> asientosDto = new ArrayList<>();
+        asientosDto.add(asientoDto);
+        reservaDto.setAsientos(asientosDto);
+
+        List<Asiento> asientosReservados = new ArrayList<>();
+        Asiento asientoExistente = new Asiento();
+        asientoExistente.setAsientoID(1L);
+        asientoExistente.setOcupado(false);
+        asientoExistente.setUbicacion("Ventana");
+        asientosReservados.add(asientoExistente);
+
+        Reserva persistReserva = new Reserva();
+        persistReserva.setReservaID(1L);
+        persistReserva.setUsuario(usuario);
+        persistReserva.setAsientos(asientosReservados);
+        persistReserva.setFechaReserva(new Date());
+        persistReserva.setVueloID(1L);
+        persistReserva.setMonto(100.0);
+
+        Pago pago = new Pago();
+        pago.setReserva(persistReserva);
+        pago.setMonto(157.35);
+        pago.setTipoPago(tarjeta_debito);
+        pago.setFechaPago(new Date());
+        pago.setPagado(true);
+
+        List<Pago> pagos = new ArrayList();
+        pagos.add(pago);
+
+        Usuario usuarioAdmin = new Usuario();
+        usuarioAdmin.setUsuarioID(2L);
+        usuarioAdmin.setTipoUsuario(ADMINISTRADOR);
+
+        when(pagoRepository.findAll()).thenReturn(pagos);
+        when(usuarioRepository.findById(2L)).thenReturn(java.util.Optional.of(usuarioAdmin));
+
+        SolVentasDiariasDto solventasDiarias = new SolVentasDiariasDto();
+        solventasDiarias.setUsuarioIdAdministrador(2L);
+
+        // Act
+        RespVentasDiarias result = flyService.getVentasDiarias(solventasDiarias);
+        RespVentasDiarias expected = new RespVentasDiarias(1, 157.35);
+
+        //assert
+        assertEquals(expected,result);
+
+    }
+
+
     @Test
     @DisplayName("US4-Ex1: llega al controller un usuario de Agente que no existe en la BDD")
     public void testEx1_ThrowsNotFoundException() {
@@ -303,6 +365,9 @@ public class FlyServiceTestConMock {
         solHistorialDto.setUsuarioIdAgente(usIdConsulta);
         solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
 
+        Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS, "Sole", 8810);
+
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.of(usConsultaMock));
         when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -322,10 +387,12 @@ public class FlyServiceTestConMock {
         solHistorialDto.setUsuarioIdAgente(usIdConsulta);
         solHistorialDto.setUsuarioIdCliente(usIdRespuesta);
 
-        Usuario usConsultaMock = new Usuario(2L, TipoUsuarioEnum.ADMINISTRADOR, "Marge S", 8810);
+        Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS, "Sole", 8810);
+        Usuario usRespuestaMock = new Usuario(2L, TipoUsuarioEnum.ADMINISTRADOR,"Diego",8810);
 
         //3-Definición del comportamiento del método Mock
-        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.of(usConsultaMock));
+        when(usuarioRepository.findById(usIdConsulta)).thenReturn(Optional.of(usConsultaMock));
+        when(usuarioRepository.findById(usIdRespuesta)).thenReturn(Optional.of(usRespuestaMock));
 
         // Act & Assert
         assertThrows(NotFoundException.class, () -> {
@@ -363,3 +430,4 @@ public class FlyServiceTestConMock {
 
     }
 }
+

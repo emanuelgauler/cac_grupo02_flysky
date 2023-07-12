@@ -1,16 +1,29 @@
 package CaC.Grupo2.FlySky.controller;
 
-import CaC.Grupo2.FlySky.dto.ErrorDto;
-import CaC.Grupo2.FlySky.dto.ReservaDto;
-import com.fasterxml.jackson.core.JsonGenerator;
+import CaC.Grupo2.FlySky.dto.request.PagoDto;
+import CaC.Grupo2.FlySky.dto.request.SolHistorialDto;
+import CaC.Grupo2.FlySky.dto.request.SolVentasDiariasDto;
+import CaC.Grupo2.FlySky.dto.response.ErrorDto;
+import CaC.Grupo2.FlySky.dto.request.ReservaDto;
+import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
+import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
+import CaC.Grupo2.FlySky.entity.Pago.Pago;
+import CaC.Grupo2.FlySky.entity.Pago.TipoPago;
+import CaC.Grupo2.FlySky.repository.*;
+import CaC.Grupo2.FlySky.service.FlyService;
+import CaC.Grupo2.FlySky.entity.usuario.Usuario;
+import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,19 +32,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class IntegracionTest {
 
     @Autowired
     MockMvc mockMvc;
+
+
 
     @Test
     void testGetAllVuelos() throws Exception {
@@ -105,11 +125,130 @@ public class IntegracionTest {
     }
 
     @Test
-    void testPagarReserva(){
+    void testPagarReserva() throws Exception{
+        PagoDto pagoDtoIn = new PagoDto(5, TipoPago.efectivo,150);
+        String rta = "Reserva pagada exitosamente";
 
+        //Transformo los objetos a Json
+        ObjectWriter objToJson = new ObjectMapper()
+                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
+                .writer();
 
+        String jsonPayloadEntrada = objToJson.writeValueAsString(pagoDtoIn);
+
+        //Act
+        MvcResult mvcResult = mockMvc.perform(post("/pagarReserva")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayloadEntrada))
+                .andDo(print())
+                .andExpect(content().contentType("text/plain;charset=UTF-8"))
+                .andReturn();
+
+        //Assert
+        assertEquals(rta,mvcResult.getResponse().getContentAsString());
     }
 
+    @Test
+    void testvalidarConsultaVentaDiarias() throws Exception {
+        SolVentasDiariasDto solventasDiariasDtoMock = new SolVentasDiariasDto();
+        solventasDiariasDtoMock.setUsuarioIdAdministrador(1L);
+
+        ObjectWriter writer = new ObjectMapper()
+                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
+                .writer();
+
+        String payloadDto = writer.writeValueAsString(solventasDiariasDtoMock);
+
+        MvcResult mvcResult = mockMvc.perform(get("/getVentasDiarias")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payloadDto))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.totalVentas").value(1))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.ingresosGenerados").value(175.5))
+                        .andReturn();
+    }
+    /*
+
+    @Test
+    void testvalidarConsultaVentaDiarias2() throws Exception {
+
+        // arrange
+
+        SolVentasDiariasDto solVentasDiarias = new SolVentasDiariasDto();
+        solVentasDiarias.setUsuarioIdAdministrador(1L);
+
+        Usuario usuarioAdmin = new Usuario();
+        usuarioAdmin.setUsuarioID(1L);
+        usuarioAdmin.setTipoUsuario(ADMINISTRADOR);
+
+        List<Pago> pagos = new ArrayList<>();
+
+        Pago pago1 = new Pago();
+        pago1.setFechaPago(new Date());
+        pago1.setPagado(true);
+        pago1.setMonto(100.0);
+        pagos.add(pago1);
+
+        Pago pago2 = new Pago();
+        pago2.setFechaPago(new Date());
+        pago2.setPagado(true);
+        pago2.setMonto(200.0);
+        pagos.add(pago2);
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioAdmin));
+        when(pagoRepository.findAll()).thenReturn(pagos);
+
+
+        ObjectWriter writer = new ObjectMapper()
+                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
+                .writer();
+
+        String payloadDto = writer.writeValueAsString(solVentasDiarias);
+
+        MvcResult mvcResult = mockMvc.perform(get("/getVentasDiarias")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payloadDto))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalVentas").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.ingresosGenerados").value(175.5))
+                .andReturn();
+    }
+*/
+
+
+
+    @Test
+    void getHistorialTest() throws Exception {
+        //Valor Recibido DTO
+        SolHistorialDto solHistorialDtoI = new SolHistorialDto(2L,3L);
+
+        List<VueloDtoSA> vueloDtoSAI = new ArrayList<>();
+        vueloDtoSAI.add(new VueloDtoSA("Mendoza","Bs. As","Jestmar",new Date(123,8,9)));
+        vueloDtoSAI.add(new VueloDtoSA("Tierra del Fuego","Bs. As","AirlineZ",new Date(123,8,10)));
+
+        RtaHistorialDto expected = new RtaHistorialDto("Historial y Preferencias de Vuelo del Cliente Michael Johnson",vueloDtoSAI);
+
+        //Transformo los objetos a Json
+        ObjectWriter objToJson = new ObjectMapper()
+                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
+                .writer();
+
+        String jsonPayloadEntrada = objToJson.writeValueAsString(solHistorialDtoI);
+        String JsonPayLoadSalida = objToJson.writeValueAsString(expected);
+
+        //Act
+        MvcResult mvcResult = mockMvc.perform(get("/getHistorial")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayloadEntrada))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        //Assert
+       assertEquals(JsonPayLoadSalida,mvcResult.getResponse().getContentAsString());
+    }
 
 
 }

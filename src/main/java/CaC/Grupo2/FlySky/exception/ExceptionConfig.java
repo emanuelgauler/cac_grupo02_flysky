@@ -1,7 +1,7 @@
 package CaC.Grupo2.FlySky.exception;
 
 
-import CaC.Grupo2.FlySky.dto.ErrorDto;
+import CaC.Grupo2.FlySky.dto.response.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

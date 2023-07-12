@@ -3,6 +3,7 @@ package CaC.Grupo2.FlySky.entity.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,7 +21,7 @@ public class Pago {
     @JoinColumn(name = "reserva_id")
     private Reserva reserva;
 
-    @Column(name = "fechaPago")
+    @Column(name = "fecha_pago")
     private Date fechaPago;
     @Column(name = "tipo_pago")
     private TipoPago tipoPago;
