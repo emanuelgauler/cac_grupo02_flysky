@@ -134,7 +134,7 @@ public class IntegracionTest {
 
     }
 
-    @BeforeEach
+    /*@BeforeEach
        public void setupGetHistorial(){
            Usuario usConsultaMock = new Usuario(1L, TipoUsuarioEnum.AGENTE_VENTAS,"Max Power",8810);
            Usuario usRespuestaMock = new Usuario(2L,TipoUsuarioEnum.CLIENTE,"Pechugas Laru",9412);
@@ -142,33 +142,20 @@ public class IntegracionTest {
            usuarioRepository.save(usConsultaMock);
            usuarioRepository.save(usRespuestaMock);
 
-        Reserva todasReservasUserTrueMock = new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null);
+            Reserva todasReservasUserTrueMock = new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null);
 
-        reservaRepository.save(todasReservasUserTrueMock);
-
-       }
+            reservaRepository.save(todasReservasUserTrueMock);
+       }*/
     @Test
     void getHistorialTest() throws Exception {
         //Valor Recibido DTO
-        SolHistorialDto solHistorialDtoI = new SolHistorialDto(1L,2L);
-
-        //Act
-        //Usuario usConsultaMock = new Usuario(2L, TipoUsuarioEnum.AGENTE_VENTAS,"Max Power",8810);
-        //Usuario usRespuestaMock = new Usuario(3L,TipoUsuarioEnum.CLIENTE,"Pechugas Laru",9412);
-
-        //when(usuarioRepository.findById(2L)).thenReturn(Optional.of(usConsultaMock));
-        //when(usuarioRepository.findById(3L)).thenReturn(Optional.of(usRespuestaMock));
-
-        //List<Reserva> todasReservasUserTrueMock = new ArrayList<>();
-        //todasReservasUserTrueMock.add(new Reserva(1L,usRespuestaMock,null, 1L,true,new Date(2023,8,1),1500,null));
-        //todasReservasUserTrueMock.add(new Reserva(3L,usRespuestaMock,null, 2L,true,new Date(2023,8,3),1300,null));
-
-        //when(reservaRepository.findByUsuario(usRespuestaMock)).thenReturn(todasReservasUserTrueMock);
+        SolHistorialDto solHistorialDtoI = new SolHistorialDto(2L,3L);
 
         List<VueloDtoSA> vueloDtoSAI = new ArrayList<>();
         vueloDtoSAI.add(new VueloDtoSA("Mendoza","Bs. As","Jestmar",new Date(123,8,9)));
+        vueloDtoSAI.add(new VueloDtoSA("Tierra del Fuego","Bs. As","AirlineZ",new Date(123,8,10)));
 
-        RtaHistorialDto expected = new RtaHistorialDto("Historial y Preferencias de Vuelo del Cliente Pechugas Laru",vueloDtoSAI);
+        RtaHistorialDto expected = new RtaHistorialDto("Historial y Preferencias de Vuelo del Cliente Michael Johnson",vueloDtoSAI);
 
         //Transformo los objetos a Json
         ObjectWriter objToJson = new ObjectMapper()
