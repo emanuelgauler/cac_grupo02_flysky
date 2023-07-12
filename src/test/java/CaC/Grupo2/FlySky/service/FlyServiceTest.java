@@ -3,14 +3,10 @@ package CaC.Grupo2.FlySky.service;
 import CaC.Grupo2.FlySky.dto.request.AsientoDto;
 import CaC.Grupo2.FlySky.dto.request.PagoDto;
 import CaC.Grupo2.FlySky.dto.request.ReservaDto;
-import CaC.Grupo2.FlySky.dto.request.SolVentasDiarias;
+import CaC.Grupo2.FlySky.dto.request.SolVentasDiariasDto;
 import CaC.Grupo2.FlySky.entity.Reserva;
-import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.exception.IllegalArgumentException;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
-import CaC.Grupo2.FlySky.repository.AsientoRepository;
-import CaC.Grupo2.FlySky.repository.FlyRepository;
-import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +18,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static CaC.Grupo2.FlySky.entity.Pago.TipoPago.efectivo;
-import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -218,7 +213,7 @@ public class FlyServiceTest {
         pago.setReservaID(50l);
 
         // Act
-        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
             flyService.pagarReserva(pago);
         });
 
@@ -309,7 +304,7 @@ public class FlyServiceTest {
     @DisplayName("validar usuario NO existente AL Consultar Ventas Diarias")
     public void testValidarUsuarioNoExistenteALConsultarVentasDiarias() {
         // Arrange
-        SolVentasDiarias solventasDiarias = new SolVentasDiarias();
+        SolVentasDiariasDto solventasDiarias = new SolVentasDiariasDto();
         solventasDiarias.setUsuarioIdAdministrador(1000L); //este usuario no existe
 
         // Act
@@ -329,7 +324,7 @@ public class FlyServiceTest {
         // Arrange
         //Verificacion usuario CLiente
         // Arrange
-        SolVentasDiarias solventasDiarias = new SolVentasDiarias();
+        SolVentasDiariasDto solventasDiarias = new SolVentasDiariasDto();
         solventasDiarias.setUsuarioIdAdministrador(5L); //este usuario es tipo cliente en la BBDD
 
         // Act
@@ -344,7 +339,7 @@ public class FlyServiceTest {
 
         //Verificacion usuario Admin
         // Arrange
-        SolVentasDiarias solventasDiarias2 = new SolVentasDiarias();
+        SolVentasDiariasDto solventasDiarias2 = new SolVentasDiariasDto();
         solventasDiarias2.setUsuarioIdAdministrador(2L); //este usuario es tipo Admin en la BBDD
 
         // Act

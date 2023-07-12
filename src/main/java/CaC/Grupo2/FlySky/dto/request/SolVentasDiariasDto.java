@@ -7,7 +7,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SolVentasDiarias {
+public class SolVentasDiariasDto {
 
     private Long usuarioIdAdministrador;
 }

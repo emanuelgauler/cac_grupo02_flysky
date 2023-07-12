@@ -1,14 +1,11 @@
 package CaC.Grupo2.FlySky.service;
 
 import CaC.Grupo2.FlySky.dto.request.*;
-import CaC.Grupo2.FlySky.dto.response.RespReservaDto;
-import CaC.Grupo2.FlySky.dto.response.RespVentasDiarias;
+import CaC.Grupo2.FlySky.dto.response.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import CaC.Grupo2.FlySky.entity.Vuelo;
-import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
-import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
 import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
 import CaC.Grupo2.FlySky.entity.usuario.Usuario;
 import CaC.Grupo2.FlySky.exception.NotFoundException;
@@ -32,7 +29,6 @@ import java.util.Optional;
 import static CaC.Grupo2.FlySky.entity.Pago.TipoPago.tarjeta_debito;
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
-import static java.util.Calendar.DATE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -116,7 +112,7 @@ public class FlyServiceTestConMock {
         when(flyRepository.findAll()).thenReturn(vuelosEnt);
 
         // Act
-        List<VueloDto> result = flyService.buscarTodosVuelos();
+        List<ErrorDto.VueloDto> result = flyService.buscarTodosVuelos();
 
         // Assertions
         assertFalse(result.isEmpty());
@@ -325,7 +321,7 @@ public class FlyServiceTestConMock {
         when(usuarioRepository.findById(2L)).thenReturn(java.util.Optional.of(usuarioAdmin));
 
 
-        SolVentasDiarias solventasDiarias = new SolVentasDiarias();
+        SolVentasDiariasDto solventasDiarias = new SolVentasDiariasDto();
         solventasDiarias.setUsuarioIdAdministrador(2L);
 
         // Act

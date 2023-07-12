@@ -1,16 +1,8 @@
 package CaC.Grupo2.FlySky.controller;
 
-import CaC.Grupo2.FlySky.dto.request.AsientoDto;
-import CaC.Grupo2.FlySky.dto.request.SolVentasDiarias;
+import CaC.Grupo2.FlySky.dto.request.SolVentasDiariasDto;
 import CaC.Grupo2.FlySky.dto.response.ErrorDto;
 import CaC.Grupo2.FlySky.dto.request.ReservaDto;
-import CaC.Grupo2.FlySky.entity.Asiento;
-import CaC.Grupo2.FlySky.entity.Pago.Pago;
-import CaC.Grupo2.FlySky.entity.Reserva;
-import CaC.Grupo2.FlySky.entity.Vuelo;
-import CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum;
-import CaC.Grupo2.FlySky.entity.usuario.Usuario;
-import CaC.Grupo2.FlySky.helperDate.DateFormatHelper;
 import CaC.Grupo2.FlySky.repository.*;
 import CaC.Grupo2.FlySky.service.FlyService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,9 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import static CaC.Grupo2.FlySky.entity.Pago.TipoPago.tarjeta_debito;
-import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
-import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.CLIENTE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -28,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,12 +24,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
-import java.util.*;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -151,7 +136,7 @@ public class IntegracionTest {
 
     @Test
     void testvalidarConsultaVentaDiarias() throws Exception {
-        SolVentasDiarias solventasDiariasDtoMock = new SolVentasDiarias();
+        SolVentasDiariasDto solventasDiariasDtoMock = new SolVentasDiariasDto();
         solventasDiariasDtoMock.setUsuarioIdAdministrador(1L);
 
         ObjectWriter writer = new ObjectMapper()

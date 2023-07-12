@@ -1,10 +1,7 @@
 package CaC.Grupo2.FlySky.service;
 
 import CaC.Grupo2.FlySky.dto.request.*;
-import CaC.Grupo2.FlySky.dto.response.RespReservaDto;
-import CaC.Grupo2.FlySky.dto.response.RespVentasDiarias;
-import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
-import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
+import CaC.Grupo2.FlySky.dto.response.*;
 import CaC.Grupo2.FlySky.entity.Asiento;
 import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
@@ -47,7 +44,7 @@ public class FlyService implements IFlyService{
     }
 
     @Override
-    public List<VueloDto> buscarTodosVuelos() {
+    public List<ErrorDto.VueloDto> buscarTodosVuelos() {
         ModelMapper mapper = new ModelMapper();
 
         List<Vuelo> vuelosEnt = flyRepository.findAll();
@@ -67,8 +64,8 @@ public class FlyService implements IFlyService{
 
         }
 
-        List<VueloDto> vuelosDto = new ArrayList<>();
-        vuelos.forEach(c-> vuelosDto.add(mapper.map(c,VueloDto.class)));
+        List<ErrorDto.VueloDto> vuelosDto = new ArrayList<>();
+        vuelos.forEach(c-> vuelosDto.add(mapper.map(c, ErrorDto.VueloDto.class)));
 
         return vuelosDto;
     }
@@ -188,7 +185,7 @@ public class FlyService implements IFlyService{
         Date fechaActual = new Date();
 
         Reserva reservaExistente = reservaRepository.findById(pagoDto.getReservaID())
-                .orElseThrow(() -> new IllegalArgumentException("No se encontro la reserva con el ID especificado"));
+                .orElseThrow(() -> new NotFoundException("No se encontro la reserva con el ID especificado"));
 
         if(reservaExistente.isReservaConfirmada()){
            throw new IllegalArgumentException("ya se realizo el pago de esta reserva");
@@ -292,7 +289,7 @@ public class FlyService implements IFlyService{
     }
 
     @Override
-    public RespVentasDiarias getVentasDiarias(SolVentasDiarias solVentasDiarias) {
+    public RespVentasDiarias getVentasDiarias(SolVentasDiariasDto solVentasDiarias) {
 
         Optional<Usuario> usuario = usuarioRepository.findById(solVentasDiarias.getUsuarioIdAdministrador());
         if (usuario.isEmpty() ) {

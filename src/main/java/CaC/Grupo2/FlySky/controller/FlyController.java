@@ -3,7 +3,7 @@ package CaC.Grupo2.FlySky.controller;
 import CaC.Grupo2.FlySky.dto.request.PagoDto;
 import CaC.Grupo2.FlySky.dto.request.ReservaDto;
 import CaC.Grupo2.FlySky.dto.request.SolHistorialDto;
-import CaC.Grupo2.FlySky.dto.request.SolVentasDiarias;
+import CaC.Grupo2.FlySky.dto.request.SolVentasDiariasDto;
 import CaC.Grupo2.FlySky.service.FlyService;
 import CaC.Grupo2.FlySky.service.IFlyService;
 import org.springframework.http.HttpStatus;
@@ -51,7 +51,7 @@ public class FlyController {
     }
 
     @GetMapping("/getVentasDiarias")
-    public ResponseEntity<?> getVentasDiarias(@RequestBody SolVentasDiarias solVentasDiarias) {
+    public ResponseEntity<?> getVentasDiarias(@RequestBody SolVentasDiariasDto solVentasDiarias) {
         return new ResponseEntity<>(flyService.getVentasDiarias(solVentasDiarias), HttpStatus.OK);
     }
 
