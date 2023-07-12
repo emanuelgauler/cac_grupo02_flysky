@@ -13,10 +13,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/getAllVuelos",
+					"raw": "http://localhost:8080/getAllVuelos",
+					"protocol": "http",
 					"host": [
-						"{{url}}"
+						"localhost"
 					],
+					"port": "8080",
 					"path": [
 						"getAllVuelos"
 					]
@@ -39,10 +41,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/reservaVuelo",
+					"raw": "http://localhost:8080/reservaVuelo",
+					"protocol": "http",
 					"host": [
-						"{{url}}"
+						"localhost"
 					],
+					"port": "8080",
 					"path": [
 						"reservaVuelo"
 					]
@@ -65,10 +69,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/pagarReserva",
+					"raw": "http://localhost:8080/pagarReserva",
+					"protocol": "http",
 					"host": [
-						"{{url}}"
+						"localhost"
 					],
+					"port": "8080",
 					"path": [
 						"pagarReserva"
 					]
@@ -94,10 +100,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/getHistorial",
+					"raw": "http://localhost:8080/getHistorial",
+					"protocol": "http",
 					"host": [
-						"{{url}}"
+						"localhost"
 					],
+					"port": "8080",
 					"path": [
 						"getHistorial"
 					]
@@ -123,10 +131,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/getVentasDiarias",
+					"raw": "http://localhost:8080/getVentasDiarias",
+					"protocol": "http",
 					"host": [
-						"{{url}}"
+						"localhost"
 					],
+					"port": "8080",
 					"path": [
 						"getVentasDiarias"
 					]
