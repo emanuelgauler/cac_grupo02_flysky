@@ -91,12 +91,12 @@ public interface IFlyService {
     RtaHistorialDto getHistorial(SolHistorialDto solHistorialDto);
 
     /**
-     * Este método sirve para que un <b>Administrador</b> puedas acceder al total de <b>ventas diarias<b> y <b>Ingresos diarios<b>
-     * <ul>
-     *   <li>El usuario quién consulta debe estar tipificado como <b>ADMINISTRADOR</b> dentro de la tabla de usuarios.</li>
-     * </ul>
+     * Este método sirve para que un <b>Administrador</b> puedas acceder al total de <b>ventas diarias<b> y <b>Ingresos diarios.<b>
+     * <br>
+     * <br>
+     * El usuario quién consulta debe estar tipificado como <b>ADMINISTRADOR</b> dentro de la tabla de usuarios.
      * @param solVentasDiariasDto (ID del usuario Aministrador)
-     * @return Devuelve al payload total Ventas y ingresos Generados del dia corriente.
+     * @return Devuelve el total Ventas y ingresos generados del dia corriente.
      * @throws NotFoundException el usuario que esta intentando realizar la consulta no existe en el sistema.
      * @throws IllegalArgumentException cuando el usuario que consulta no es ADMINISTRADOR
      *
