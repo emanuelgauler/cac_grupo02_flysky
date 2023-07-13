@@ -22,6 +22,10 @@ El sistema cuenta con un módulo de pago seguro que ofrece diversas opciones de 
 
 FlySky permite a los agentes de ventas, y al sistema en sí, administrar y mantener un registro actualizado de los datos de los clientes. Esto incluye información personal, historial de reservas, preferencias de viaje y detalles de contacto. Con esta funcionalidad, se puede brindar un servicio personalizado, promociones especiales y recomendaciones basadas en las preferencias individuales de cada cliente.
 
+### Resumen de ventas Diarias (Ventas Diarias)
+
+FlySky permite a los administradores, poder generar informes diarios de ventas que muestren el número de ventas realizadas y los ingresos generados, para analizar el rendimiento del negocio y tomar decisiones basadas en datos.
+
 ## Estructura del proyecto
 
 El proyecto sigue una estructura organizada en varios componentes:
