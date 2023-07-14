@@ -1,10 +1,9 @@
 package CaC.Grupo2.FlySky.entity.usuario;
 
-import CaC.Grupo2.FlySky.entity.Reserva;
-import lombok.*;
 
+import lombok.*;
 import javax.persistence.*;
-import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

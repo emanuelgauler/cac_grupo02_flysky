@@ -2,7 +2,6 @@ package CaC.Grupo2.FlySky.dto.response;
 
 import lombok.*;
 
-import java.math.BigDecimal;
 
 @Getter
 @Setter

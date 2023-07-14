@@ -269,9 +269,9 @@ public class FlyServiceTest {
     public void testIntentarPagarReservaConTiempoVencido() {
         // Arrange
         PagoDto pago = new PagoDto();
-        pago.setReservaID(2l); //esta reserva ya se encuentra vencida
+        pago.setReservaID(2L); //esta reserva ya se encuentra vencida
         pago.setTipoPago(efectivo);
-        pago.setMonto(100);
+        pago.setMonto(150);
 
         // Act
         Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -374,10 +374,3 @@ public class FlyServiceTest {
         assertEquals(expected2,actualMessage2);
     }
 }
-
-
-
-
-
-
-

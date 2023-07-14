@@ -3,7 +3,6 @@ package CaC.Grupo2.FlySky.entity.Pago;
 import CaC.Grupo2.FlySky.entity.Reserva;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
 import java.util.Date;
