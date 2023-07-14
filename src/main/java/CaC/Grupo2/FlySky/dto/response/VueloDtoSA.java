@@ -1,18 +1,15 @@
 package CaC.Grupo2.FlySky.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-
 import java.util.Date;
-import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode
-
 public class VueloDtoSA {
 
         private String origen;

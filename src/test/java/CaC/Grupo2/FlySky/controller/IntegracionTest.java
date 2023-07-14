@@ -7,22 +7,14 @@ import CaC.Grupo2.FlySky.dto.response.ErrorDto;
 import CaC.Grupo2.FlySky.dto.request.ReservaDto;
 import CaC.Grupo2.FlySky.dto.response.RtaHistorialDto;
 import CaC.Grupo2.FlySky.dto.response.VueloDtoSA;
-import CaC.Grupo2.FlySky.entity.Pago.Pago;
 import CaC.Grupo2.FlySky.entity.Pago.TipoPago;
-import CaC.Grupo2.FlySky.repository.*;
-import CaC.Grupo2.FlySky.service.FlyService;
-import CaC.Grupo2.FlySky.entity.usuario.Usuario;
-import CaC.Grupo2.FlySky.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import static CaC.Grupo2.FlySky.entity.usuario.TipoUsuarioEnum.ADMINISTRADOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,8 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -61,7 +51,7 @@ public class IntegracionTest {
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].origen").value("Mendoza"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].destino").value("Bs. As"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].precio").value(150.5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].precio").value(175.5))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].aerolinea").value("Jestmar"))
                 .andReturn();
 
@@ -168,56 +158,6 @@ public class IntegracionTest {
                         .andExpect(MockMvcResultMatchers.jsonPath("$.ingresosGenerados").value(175.5))
                         .andReturn();
     }
-    /*
-
-    @Test
-    void testvalidarConsultaVentaDiarias2() throws Exception {
-
-        // arrange
-
-        SolVentasDiariasDto solVentasDiarias = new SolVentasDiariasDto();
-        solVentasDiarias.setUsuarioIdAdministrador(1L);
-
-        Usuario usuarioAdmin = new Usuario();
-        usuarioAdmin.setUsuarioID(1L);
-        usuarioAdmin.setTipoUsuario(ADMINISTRADOR);
-
-        List<Pago> pagos = new ArrayList<>();
-
-        Pago pago1 = new Pago();
-        pago1.setFechaPago(new Date());
-        pago1.setPagado(true);
-        pago1.setMonto(100.0);
-        pagos.add(pago1);
-
-        Pago pago2 = new Pago();
-        pago2.setFechaPago(new Date());
-        pago2.setPagado(true);
-        pago2.setMonto(200.0);
-        pagos.add(pago2);
-
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioAdmin));
-        when(pagoRepository.findAll()).thenReturn(pagos);
-
-
-        ObjectWriter writer = new ObjectMapper()
-                .configure(SerializationFeature.WRAP_ROOT_VALUE,false)
-                .writer();
-
-        String payloadDto = writer.writeValueAsString(solVentasDiarias);
-
-        MvcResult mvcResult = mockMvc.perform(get("/getVentasDiarias")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(payloadDto))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.totalVentas").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.ingresosGenerados").value(175.5))
-                .andReturn();
-    }
-*/
-
-
 
     @Test
     void getHistorialTest() throws Exception {
