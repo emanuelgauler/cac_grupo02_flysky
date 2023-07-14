@@ -58,7 +58,7 @@ UPDATE ASIENTOS
 SET OCUPADO = 'true', VUELOID = '001', RESERVA_ID = 1, PASAJERO = 'jim gavidia', UBICACION = 'ventana' --
 WHERE ASIENTOID = 1;
 
---cargo una los datos del asiento id 1 a la reserva id 6
+--cargo una los datos del asiento id 3 a la reserva id 6
 UPDATE ASIENTOS
 SET OCUPADO = 'true', VUELOID = '001', RESERVA_ID = 6, PASAJERO = 'Maria Rodriguez', UBICACION = 'ventana' --
 WHERE ASIENTOID = 3;
