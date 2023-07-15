@@ -1,8 +1,7 @@
 package CaC.Grupo2.FlySky.entity.Pago;
 
 import CaC.Grupo2.FlySky.entity.Reserva;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +9,9 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Table(name = "pagos")
 public class Pago {
     @Id
