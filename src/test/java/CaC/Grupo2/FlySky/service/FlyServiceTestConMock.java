@@ -429,7 +429,8 @@ public class FlyServiceTestConMock {
     @Test
     @DisplayName("Test para comprobar que se libera una reserva")
     public void liberarRerservasExpiradasTest() {
-        // Creamos una reserva no confirmada con algunos asientos
+        //ARRANGE
+        // 1) Creamos una reserva no confirmada con algunos asientos
         List<Asiento> asientosReserva = new ArrayList<>();
         Asiento asiento1 = new Asiento(1L, null, "Max", null, true, "10V");
         Asiento asiento2 = new Asiento(2L, null, "Sole", null, true, "5V");
@@ -438,23 +439,35 @@ public class FlyServiceTestConMock {
 
         Reserva reservaNoConfirmada = new Reserva(1L, null, asientosReserva, null, false, new Date(2023, 05, 1), 1500, null);
 
-        // Creamos un pago asociado a la reserva no confirmada
+        // 2) Creamos un pago asociado a la reserva no confirmada
         Pago pagoAsociado = new Pago(1L, reservaNoConfirmada, null, null, 1500, false);
         reservaNoConfirmada.setPago(pagoAsociado);
 
-        // Creamos un espía de la instancia real de FlyService
+        // 3) Creamos un espía de la instancia real de FlyService
         FlyService flyServiceSpy = Mockito.spy(flyService);
 
-        // Simulamos el comportamiento del método haPasadoTiempoLimiteDePago para que devuelva true
+        // 4) Simulamos el comportamiento del método haPasadoTiempoLimiteDePago para que devuelva true
         when(flyServiceSpy.haPasadoTiempoLimiteDePago(reservaNoConfirmada)).thenReturn(true);
 
-        // Mockeamos el resultado de reservaRepository.findAll() para que devuelva la reserva no confirmada
+        // 5) Mockeamos el resultado de reservaRepository.findAll() para que devuelva la reserva no confirmada
         List<Reserva> reservas = new ArrayList<>();
         reservas.add(reservaNoConfirmada);
         when(reservaRepository.findAll()).thenReturn(reservas);
 
+        //ACT
         // Ejecutamos el método que queremos probar
         flyServiceSpy.liberarReservasExpiradas();
+
+        //ASSERTS
+        // Verificamos que el método save del mock de AsientoRepository se haya sido invocado para cada asiento en la reserva no confirmada
+        verify(asientoRepository, times(2)).save(Mockito.any(Asiento.class));
+
+        // Verificamos que los atributos de los asientos se hayan cambiado correctamente
+        for (Asiento asiento : asientosReserva) {
+            assertFalse(asiento.isOcupado());
+            assertNull(asiento.getPasajero());
+            assertNull(asiento.getUbicacion());
+        }
     }
 }
 
